@@ -4,7 +4,7 @@
 \alias{visunet}
 \title{Rule Network Visualistion gadget}
 \usage{
-visunet(data1, type, NewData, NewDataValues)
+visunet(data1, type = "RDF", NewData = FALSE, NewDataValues)
 }
 \arguments{
 \item{rule}{table}
@@ -14,5 +14,10 @@ Rule Network Object.
 }
 \description{
 Rule Network Visualistion gadget
+}
+\examples{
+out=rosetta(autcon)
+rules=out$main
+visunet(rules)
 }
 \keyword{misc}

@@ -4,16 +4,14 @@
 #' @return Rule Network Object.
 #' @keywords misc
 #' @export
-# @examples
-# library(VisuNet)
-# library(R.ROSETTA)
-# out=rosetta(autcon)
-# rules=out$main
-# visunet(rules, 'RDF',  NewData = FALSE, NewDataValues)
-visunet = function(data1, type,  NewData, NewDataValues){
+#' @examples
+#' out=rosetta(autcon)
+#' rules=out$main
+#' visunet(rules)
+visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
   minAcc = 0.7
   minSupp = 1
-  minPrecSupp = 0.1
+  minPrecSupp = 10
   NodeColorType = 'GE'
 
   data_input = function(data1, type){
@@ -53,10 +51,10 @@ visunet = function(data1, type,  NewData, NewDataValues){
                                             #sliderInput("support", h3("Min Support"),
                                             #             min = 0, max = 100, value = minSupp, step = 1),
 
-                                            uiOutput("PrecSupport"),
+                                           # uiOutput("PrecSupport"),
 
-                                            #sliderInput("PrecSupport", h3("Min % Support"),
-                                            #              min = 0, max = 1, value = minPrecSupp, step = 0.01),
+                                            sliderInput("PrecSupport", h3("Min % Support"),
+                                                          min = 0, max = 100, value = minPrecSupp, step = 1),
                                             selectInput("NodeColor",label = h4("Color of nodes"), choices =  c('Accuracy value' = 'A','Gene Expression' = 'GE'), selected = NodeColorType),
                                             actionButton("run", "Run")#,
                                             #downloadButton("downloadData", "Download Plot")
@@ -186,12 +184,12 @@ visunet = function(data1, type,  NewData, NewDataValues){
     })
 
     # output$PrecSupport <- renderUI({
-    #    data =  data()
-    #  conditionalPanel(
-    #     condition = "length(data$meanPERC_SUPP) > 0",
+   #     data =  data()
+   #  conditionalPanel(
+   #      condition = "length(data$meanPERC_SUPP) > 0",
     #     sliderInput("PrecSupport", h3("Min % Support"),
-    #                min = 0, max = 1, value = minPrecSupp, step = 0.01)
-    #
+     #               min = 0, max = 100, value = minPrecSupp, step = 1)
+
     #    )
     #  })
     #
