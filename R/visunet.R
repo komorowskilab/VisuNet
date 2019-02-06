@@ -109,7 +109,9 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
     #  })
 
     data <- eventReactive( input$run, {
-
+      validate(
+        filter_rules(rules, input$accuracy, input$support, input$PrecSupport)
+      )
       data_input=generate_object(decs, rules,type, input$accuracy, input$support, input$PrecSupport, input$NodeColor, NewData, NewDataValues)
     })
 
@@ -145,9 +147,12 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
 
       data =  data()
       decisionName = input$decisions
+
       nodes = data[[decisionName]]$nodes
       edges = data[[decisionName]]$edges
-
+      validate(
+        need(is.null(nodes) == FALSE, "No rules for the current decision. Change the settings")
+      )
 
       graph = visNetwork::visNetwork(nodes, edges, main = paste('Decision: ', decisionName), height = "800px", width = "100%") %>%
         visLayout(randomSeed = 123) %>%

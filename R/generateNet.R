@@ -1,9 +1,13 @@
-generateNet=function(decs, rules,type, NodeColorType, NewData, NewDataValues){
+generateNet=function(decs, rules, type, RulesSetSite, NodeColorType, NewData, NewDataValues){
+  # rules = recRulesFiltr
+  # print(rules)
   if(type == 'RDF'){
     vec = as.character(as.matrix(rules["FEATURES"]))
     lst1 = sapply(vec, function(x) strsplit(x, ","))
     vec2 = as.character(as.matrix(rules["DISC_CLASSES"]))
     lst2 = sapply(vec2, function(x) strsplit(x, ","))
+    #print(lst1)
+    #print(lst2)
     newLst = mapply(paste, collapse = ",", sep = "=", lst1,
                     lst2)
     NodeID = as.character(unname(newLst))
@@ -142,45 +146,44 @@ generateNet=function(decs, rules,type, NodeColorType, NewData, NewDataValues){
 
   #edges
   AllRuleLen = (lapply(Nodes_vec, length))
-  rules2elem = which(AllRuleLen == 2)
-  EdgesInfo2Ele=cbind(do.call(rbind,Nodes_vec[rules2elem]), rules[rules2elem,c("CONNECTION")])
+  EdgesInfo = NULL
+  if(length(which(AllRuleLen !=1)) != 0){
 
-  rules3AndMoreElem = which(AllRuleLen > 2)
-  #Nodes_vec[rules3AndMoreElem]
-  #rules[rules3AndMoreElem,"CONNECTION"]
-  rules3AndMoreElemList = lapply(Nodes_vec[rules3AndMoreElem], function(x) matrix(x[combn(1:length(x), 2)],ncol = 2, byrow = TRUE))
+    #print(AllRuleLen)
+    rules2elem = which(AllRuleLen == 2)
+    EdgesInfo2Ele=cbind(do.call(rbind,Nodes_vec[rules2elem]), rules[rules2elem,c("CONNECTION")])
 
+    rules3AndMoreElem = which(AllRuleLen > 2)
+    if(is.null(dim(rules3AndMoreElem)) == FALSE){
+      rules3AndMoreElemList = lapply(Nodes_vec[rules3AndMoreElem], function(x) matrix(x[combn(1:length(x), 2)],ncol = 2, byrow = TRUE))
+      EdgesInfo3Ele = do.call(rbind,mapply('cbind',  rules3AndMoreElemList,
+                                           (rules[rules3AndMoreElem,"CONNECTION"]), SIMPLIFY=FALSE))
+      EdgesInfoAll=rbind(EdgesInfo2Ele, EdgesInfo3Ele)
+    }else{
+      EdgesInfoAll=EdgesInfo2Ele
+    }
 
-  EdgesInfo3Ele = do.call(rbind,mapply('cbind',  rules3AndMoreElemList,
-                                       (rules[rules3AndMoreElem,"CONNECTION"]), SIMPLIFY=FALSE))
-  #cbind(rules3AndMoreElemList[[10]],(rules[rules3AndMoreElem[10],"CONNECTION"]))
+    EdgesInfoTemp = as.data.frame(EdgesInfoAll)
+    colnames(EdgesInfoTemp) = c('from' , 'to' , 'conn')
+    EdgesInfoAllSort=t(apply(subset(EdgesInfoTemp, select=c("from", "to")), 1, sort))
+    colnames(EdgesInfoAllSort) = c('from' , 'to')
 
-  #EdgesInfo3Ele = do.call(rbind,mapply(cbind,  rules3AndMoreElemList,
-  #                ((rules[rules3AndMoreElem,"CONNECTION"]))))
+    EdgesInfoAllSort2=data.frame(EdgesInfoAllSort,'conn' = EdgesInfoTemp$conn )
+    EdgesInfo = aggregate(EdgesInfoAllSort2$conn~EdgesInfoAllSort2$from+EdgesInfoAllSort2$to, FUN= function(x) sum(as.numeric(levels(x))[x]))
+    colnames(EdgesInfo) = c('from' , 'to' , 'conn')
+    #Normalized connection value
+    if(dim(EdgesInfo)[1] == 1 )  EdgesInfo$connNorm = 1 else EdgesInfo$connNorm = ((EdgesInfo$conn-min(EdgesInfo$conn))/(max(EdgesInfo$conn)-min(EdgesInfo$conn)))
+    EdgesInfo$label2 = paste0(EdgesInfo$from, '-', EdgesInfo$to )
+    EdgesInfo$color = rep('#e5e5e2', length(EdgesInfo$connNorm))
+    EdgesInfo$color[which(EdgesInfo$connNorm >= 0.85)] = '#ea1d1d'
+    EdgesInfo$color[which(EdgesInfo$connNorm < 0.85 & EdgesInfo$connNorm >= 0.7)] = '#d86431'
+    EdgesInfo$color[which(EdgesInfo$connNorm < 0.7 & EdgesInfo$connNorm >= 0.55)] = '#dbcb33'
+    EdgesTile = paste0('From:  <b>', EdgesInfo$from, '</b><br/>To: <b>', EdgesInfo$to,
+                       '</b><br/>Connection: <b>', round(EdgesInfo$conn,2), '</b>')
+    EdgesInfo$title = EdgesTile
+    EdgesInfo$width  = (EdgesInfo$connNorm *5)
 
-
-
-  EdgesInfoAll=rbind(EdgesInfo2Ele, EdgesInfo3Ele)
-  #EdgesInfoAll2=cbind(EdgesInfoAll,rownames(EdgesInfoAll))
-  EdgesInfoAllSort=t(apply(EdgesInfoAll[,1:2], 1, sort))
-  EdgesInfoAllSort2=as.data.frame(cbind(EdgesInfoAllSort,EdgesInfoAll[,3] ))
-  EdgesInfo = aggregate(EdgesInfoAllSort2[,3]~EdgesInfoAllSort2[,1]+EdgesInfoAllSort2[,2], FUN= function(x) sum(as.numeric(levels(x))[x]))
-  colnames(EdgesInfo) = c('from' , 'to' , 'conn')
-  EdgesInfo$label2 = paste0(EdgesInfo$from, '-', EdgesInfo$to )
-  #Normalized connection value
-  EdgesInfo$connNorm = ((EdgesInfo$conn-min(EdgesInfo$conn))/(max(EdgesInfo$conn)-min(EdgesInfo$conn)))
-  EdgesInfo$color = rep('#e5e5e2', length(EdgesInfo$connNorm))
-  EdgesInfo$color[which(EdgesInfo$connNorm >= 0.85)] = '#ea1d1d'
-  EdgesInfo$color[which(EdgesInfo$connNorm < 0.85 & EdgesInfo$connNorm >= 0.7)] = '#d86431'
-  EdgesInfo$color[which(EdgesInfo$connNorm < 0.7 & EdgesInfo$connNorm >= 0.55)] = '#dbcb33'
-
-  EdgesTile = paste0('From:  <b>', EdgesInfo[,1], '</b><br/>To: <b>', EdgesInfo[,2],
-                     '</b><br/>Connection: <b>', round(EdgesInfo[,3],2), '</b>')
-  EdgesInfo$title = EdgesTile
-
-  EdgesInfo$width  = (EdgesInfo$connNorm *5)
-
-
+  }
 
   if(NewData == TRUE){
     if(NewDataValues$type == 'nodes'){
