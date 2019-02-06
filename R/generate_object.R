@@ -34,7 +34,7 @@ generate_object = function(decs, rules,type, minAcc, minSupp, PercSupp, NodeColo
     #print(nodes)
   }
 
- # AllNets[['all']] = generateNet('all', recRulesFiltr, type, dim(recRulesFiltr)[1], NodeColorType = NodeColorType ,NewData, NewDataValues)
+  AllNets[['all']] = generateNet('all', recRulesFiltr, type, dim(recRulesFiltr)[1], NodeColorType = NodeColorType ,NewData, NewDataValues)
   AllNets[['Rules']] = rules
   return(AllNets)
 }
