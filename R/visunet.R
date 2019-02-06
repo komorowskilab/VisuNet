@@ -11,12 +11,12 @@
 #' rules=out$main
 #' visunet(rules)
 #'------------
-#' 'Line by line' format
-#' rules = (read.csv2('dataset_ethnicity_all_100set.txt', sep='\t', header = FALSE, col.names = c('FEATURES', 'DECISION', 'ACC_RHS', 'SUPP_RHS'),stringsAsFactors=FALSE))
-#' rules$ACC_RHS = as.numeric(rules$ACC_RHS)
-#' rules$SUPP_RHS = as.numeric(rules$SUPP_RHS)
-#' rules$PVAL = 0.05
-#' d2 = visunet(rules, 'L')
+#' Line by line file
+#' rules2 = (read.csv2('dataset_ethnicity_all_100set.txt', sep='\t', header = FALSE, col.names = c('FEATURES', 'DECISION', 'ACC_RHS', 'SUPP_RHS'),stringsAsFactors=FALSE))
+#' rules2$ACC_RHS = as.numeric(rules2$ACC_RHS)
+#' rules2$SUPP_RHS = as.numeric(rules2$SUPP_RHS)
+#' rules2$PVAL = 0.05
+#' d2 = visunet(rules2, 'L')
 #'
 visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
   minAcc = 0.7
@@ -40,12 +40,18 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
     return(df)
   }
 
+  #return(print(head(data_input(data, type))))
+
+
+
+
   ui <- miniPage(
     theme = shinytheme("cerulean"),
     gadgetTitleBar(h1("VisuNet")),
     miniTabstripPanel(
       miniTabPanel("Visualize", icon = icon('project-diagram'),
 
+                   #"code-branch"),
                    fillPage(fillRow(padding =15, flex = c(1, 3),
                                     fillCol(flex = c(NA),
                                             uiOutput("decisions"),
@@ -100,7 +106,6 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
     rules = data_input(data1, type)
     decs = unique(as.matrix(rules$DECISION))
     decs_f = c(decs, 'all')
-    data_input=generate_object(decs_f, rules,type, NodeColorType, NewData, NewDataValues)
 
 
     #data <- eventReactive( c(input$decisions, input$accuracy, input$support, input$NodeColor) , {
@@ -113,34 +118,52 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
     #    data_input=generate_object(decs, rules, input$accuracy, input$support, input$PrecSupport, input$NodeColor, NewData, NewDataValues)
     #  })
 
-    nodesFiltr <- eventReactive( input$run, {
+    data <- eventReactive( input$run, {
       validate(
-        filterRulesTest(data_input$all$nodes, input$accuracy, input$support, input$PrecSupport)
+        filter_rules(rules, input$accuracy, input$support, input$PrecSupport)
       )
-      decisionName = input$decisions
-      nodes = data_input[[decisionName]]$nodes
-      #print(nodes)
-      edges = data_input[[decisionName]]$edges
-      nodesFiltr = filterRules(nodes, input$accuracy, input$support, input$PrecSupport)
-
-      nodesFiltrColor = NodeColor(nodesFiltr, input$NodeColor)
-      output = list(nodes = nodesFiltrColor, edges = data_input[[decisionName]]$edges, decisionName = decisionName)
-      #print(dim(nodes))
-      #print(dim(nodesFiltr))
-      return(output)
+      data_input=generate_object(decs, rules,type, input$accuracy, input$support, input$PrecSupport, input$NodeColor, NewData, NewDataValues)
     })
+
+
+
+
+
+
+    # rules = data_input(data1, type)
+
+    #filtration parametrs
+    #AccMin = 0.7
+    #SuppMin = 1
+    #PercSupp = 0.7
+    #Node color type
+    # 'A' -accuracy
+    # 'GE' - gene expression
+    #NodeColorType = 'GE'
+
+    # data=generate_object(decs, rules, AccMin, SuppMin, PercSupp, NodeColorType)
+    # net=network$net
+    # data <- toVisNetworkData( net)
+
+    # nodes <- data$nodes
+    #print(dim(nodes))
+    #print(class(nodes))
+    #nodes2=nodes[,-5]
+    # i=2
+    # nodes = data[[decs[i]]]$nodes
+    #edges = data[[decs[i]]]$edges
 
     output$network <- renderVisNetwork({
 
-      net =  nodesFiltr()
-      print(net$nodes)
-      nodes = net$nodes
-      edges = net$edges
-      decisionName = net$decisionName
+      data =  data()
+      decisionName = input$decisions
+
+      nodes = data[[decisionName]]$nodes
+      edges = data[[decisionName]]$edges
       validate(
-        need(dim(nodes)[1] != 0, "No rules for the current decision. Change the settings")
+        need(is.null(nodes) == FALSE, "No rules for the current decision. Change the settings")
       )
-      print(head(nodes$color.backgroundAcc))
+
       graph = visNetwork::visNetwork(nodes, edges, main = paste('Decision: ', decisionName), height = "800px", width = "100%") %>%
         visLayout(randomSeed = 123) %>%
         visPhysics(enabled = TRUE) %>%
@@ -229,7 +252,7 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
     # })
 
     observeEvent(input$done, {
-      stopApp(data_input)
+      stopApp(data())
     })
 
 

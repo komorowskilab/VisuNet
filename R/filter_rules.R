@@ -1,8 +1,4 @@
 filter_rules = function(rules, minAcc, minSupp, PercSupp){
-  print('validation')
-  print(minAcc)
-  #max(rules$ACC_RHS)
- # print(rules)
   if(length(rules$PERC_SUPP_RHS ) > 0){
     if(max(rules$PERC_SUPP_RHS) < PercSupp){
       'Please change min % Support value. Your value is too high!'

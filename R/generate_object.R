@@ -1,14 +1,18 @@
-generate_object = function(decs, rules,type,  NodeColorType,  NewData, NewDataValues){
+generate_object = function(decs, rules,type, minAcc, minSupp, PercSupp, NodeColorType,  NewData, NewDataValues){
 
+  if(length(rules$PERC_SUPP_RHS ) >0){
+    recRulesFiltr = rules[which(rules$ACC_RHS >= minAcc & rules$PERC_SUPP_RHS >= PercSupp),]
+  }else{
+    recRulesFiltr = rules[which(rules$ACC_RHS >= minAcc & rules$SUPP_RHS >= minSupp),]
+  }
   #print(dim(recRulesFiltr))
   AllNets = NULL
   Net = NULL
-  RulesDec = NULL
   for (i in decs){
     #i = "control"
-    RulesDec = NULL
+    recRulesDecs = NULL
     #rules for decision
-    RulesDec = rules[which(rules$DECISION == i),]
+    RulesDec = recRulesFiltr[which(recRulesFiltr$DECISION ==i),]
     #rules = recRulesDecs
     #rules filtration
     #.......#
@@ -18,19 +22,21 @@ generate_object = function(decs, rules,type,  NodeColorType,  NewData, NewDataVa
     # print(RulesDec)
     RulesSetSize=dim(RulesDec)[1]
     if(RulesSetSize != 0){
-      print(dim(RulesDec))
-      Net = generateNet(i, RulesDec, type, RulesSetSize, NodeColorType = NodeColorType, NewData, NewDataValues)
+      Net = generateNet(i, RulesDec, type, RulesSetSize, NodeColorType = NodeColorType, NewData, NewDataValues )
     }else{
       Net = list(nodes = NULL, edges = NULL, NodeRulesSetPerNode = NULL)
     }
 
-    #nodes = list(id =  nodesMatrix[,'id'], label =  nodesMatrix[,"label"])
     AllNets[[i]] = Net
     Net =  NULL
     #print(nodes)
   }
-
-  AllNets[['all']] = generateNet('all', rules, type, dim(rules)[1], NodeColorType = NodeColorType ,NewData, NewDataValues)
+  if(dim(recRulesFiltr)[1] != 0){
+    AllNets[['all']] = generateNet('all', recRulesFiltr, type, dim(recRulesFiltr)[1], NodeColorType = NodeColorType,
+                                   NewData, NewDataValues)
+  }else{
+    AllNets[['all']] = list(nodes = NULL, edges = NULL, NodeRulesSetPerNode = NULL)
+  }
   AllNets[['Rules']] = rules
   return(AllNets)
 }

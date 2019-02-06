@@ -1,5 +1,5 @@
 generateNet=function(decs, rules, type, RulesSetSite, NodeColorType, NewData, NewDataValues){
-  # rules = RulesDec
+  # rules = recRulesFiltr
   # print(rules)
   if(type == 'RDF'){
     vec = as.character(as.matrix(rules["FEATURES"]))
@@ -60,44 +60,43 @@ generateNet=function(decs, rules, type, RulesSetSite, NodeColorType, NewData, Ne
   }
 
 
-  NodeColorGE = NULL
-  NodeColorAcc = NULL
+  NodeColor = NULL
 
-  # if(NodeColorType == 'GE'){
-  #color according to the discrete state - GENE EXPRESSION:
-  NodeColorGE = rep('#999999', length(NodeUniq))
-  NodeColorGE[which(NodeState == min(NodeState))] = '#56B4E9'
-  NodeColorGE[which(NodeState == max(NodeState))] = '#E69F00'
+  if(NodeColorType == 'GE'){
+    #color according to the discrete state - GENE EXPRESSION:
+    NodeColor = rep('#999999', length(NodeUniq))
+    NodeColor[which(NodeState == min(NodeState))] = '#56B4E9'
+    NodeColor[which(NodeState == max(NodeState))] = '#E69F00'
 
-  #Nodes label
-  NodeLabelGE = unlist(lapply(NodeUniq, function(x) strsplit(x, '=')[[1]][1]))
-  #}else if(NodeColorType == 'A'){
-  #color according to the discrete state:
-  #colFunc = colorRampPalette(c("#F5DBC6", "#D55E00"), interpolate = "spline", bias = 4)
-  #colorVec = colFunc(10)
-  #plot(rep(1,10),col=colorVec,pch=19,cex=3)
-  #NodeColor = colorVec[round(meanAcc,2)*100]
+    #Nodes label
+    NodeLabel = unlist(lapply(NodeUniq, function(x) strsplit(x, '=')[[1]][1]))
+  }else if(NodeColorType == 'A'){
+    #color according to the discrete state:
+    #colFunc = colorRampPalette(c("#F5DBC6", "#D55E00"), interpolate = "spline", bias = 4)
+    #colorVec = colFunc(10)
+    #plot(rep(1,10),col=colorVec,pch=19,cex=3)
+    #NodeColor = colorVec[round(meanAcc,2)*100]
 
-  # #color according to the accuracy value
-  #matrix of colors
-  breaks=seq(0.7, 1, by=0.001)
-  colFunc60_100 = colorRampPalette(c("#EDBF9A", "#D55E00"))
-  colFunc60_100 = colorRampPalette(c("#F1CDB0", "#D55E00"))
-  colVec = colFunc60_100(length(breaks))
-  breaks2 = seq(0,0.69,by=0.001)
-  #colFunc0_60 = colorRampPalette(c("#F5DBC6", "#EDBF9A"))
-  #colFunc0_60 = colorRampPalette(c("white", "#EDBF9A"))
-  colFunc0_60 = colorRampPalette(c("white", "#F1CDB0"))
-  colVec2 = colFunc0_60(length(breaks2))
-  ColorMat = cbind(as.numeric(c(breaks2, breaks)),c(colVec2, colVec))
+    # #color according to the accuracy value
+    #matrix of colors
+    breaks=seq(0.7, 1, by=0.001)
+    colFunc60_100 = colorRampPalette(c("#EDBF9A", "#D55E00"))
+    colFunc60_100 = colorRampPalette(c("#F1CDB0", "#D55E00"))
+    colVec = colFunc60_100(length(breaks))
+    breaks2 = seq(0,0.69,by=0.001)
+    #colFunc0_60 = colorRampPalette(c("#F5DBC6", "#EDBF9A"))
+    #colFunc0_60 = colorRampPalette(c("white", "#EDBF9A"))
+    colFunc0_60 = colorRampPalette(c("white", "#F1CDB0"))
+    colVec2 = colFunc0_60(length(breaks2))
+    ColorMat = cbind(as.numeric(c(breaks2, breaks)),c(colVec2, colVec))
 
-  NodeColorAcc = ColorMat[match(round(meanAcc,2),ColorMat[,1]),2]
+    NodeColor = ColorMat[match(round(meanAcc,2),ColorMat[,1]),2]
 
-  #Nodes label
-  NodeLabelAcc = NodeUniq
-  #}else{
-  #   print('The color schema value is wrong!')
-  # }
+    #Nodes label
+    NodeLabel = NodeUniq
+  }else{
+    print('The color schema value is wrong!')
+  }
 
 
 
@@ -106,8 +105,7 @@ generateNet=function(decs, rules, type, RulesSetSite, NodeColorType, NewData, Ne
     NodeTitle = paste0('Name: <b>', NodeUniq, '</b><br/>Edges: <b>', NRules, '</b><br/>Connection: <b>',  round(NodeConnection,2),
                        '</b><br/>Mean accuracy: <b>', round(meanAcc,2), '</b><br/>Mean % support: <b>', round(meanPrecSupp,2))
     #Node Info data frame
-    NodeInfoDF = data.frame(id = NodeUniq,  label =  NodeLabelAcc, DiscState = NodeState, color.backgroundAcc = NodeColorAcc,
-                            color.backgroundGE = NodeColorGE, value = meanPrecSupp,
+    NodeInfoDF = data.frame(id = NodeUniq,  label =  NodeLabel, DiscState = NodeState, color.background = NodeColor, value = meanPrecSupp,
                             borderWidth = (PrecRules*20), color.border = c("#0072B2"),
                             meanAcc = meanAcc, meanSupp = meanSupp, meanPERC_SUPP = meanPrecSupp, NRules = NRules,
                             PrecRules = PrecRules, NodeConnection = NodeConnection, title = NodeTitle)
@@ -116,7 +114,7 @@ generateNet=function(decs, rules, type, RulesSetSite, NodeColorType, NewData, Ne
     NodeTitle = paste0('Name: <b>', NodeUniq, '</b><br/>Edges: <b>', NRules, '</b><br/>Connection: <b>',  round(NodeConnection,2),
                        '</b><br/>Mean accuracy: <b>', round(meanAcc,2), '</b><br/>Mean support: <b>', round(meanSupp,2))
     #Node Info data frame
-    NodeInfoDF = data.frame(id = NodeUniq,  label =  NodeLabelAcc, DiscState = NodeState, color.background = NodeColor, value = meanSupp,
+    NodeInfoDF = data.frame(id = NodeUniq,  label =  NodeLabel, DiscState = NodeState, color.background = NodeColor, value = meanSupp,
                             borderWidth = (PrecRules*20), color.border = c("#0072B2"),
                             meanAcc = meanAcc, meanSupp = meanSupp,  NRules = NRules,
                             PrecRules = PrecRules, NodeConnection = NodeConnection, title = NodeTitle)
@@ -156,11 +154,8 @@ generateNet=function(decs, rules, type, RulesSetSite, NodeColorType, NewData, Ne
     EdgesInfo2Ele=cbind(do.call(rbind,Nodes_vec[rules2elem]), rules[rules2elem,c("CONNECTION")])
 
     rules3AndMoreElem = which(AllRuleLen > 2)
-    print(is.null(dim(rules3AndMoreElem)))
-    if(is.null(dim(rules3AndMoreElem)) == TRUE){
+    if(is.null(dim(rules3AndMoreElem)) == FALSE){
       rules3AndMoreElemList = lapply(Nodes_vec[rules3AndMoreElem], function(x) matrix(x[combn(1:length(x), 2)],ncol = 2, byrow = TRUE))
-
-
       EdgesInfo3Ele = do.call(rbind,mapply('cbind',  rules3AndMoreElemList,
                                            (rules[rules3AndMoreElem,"CONNECTION"]), SIMPLIFY=FALSE))
       EdgesInfoAll=rbind(EdgesInfo2Ele, EdgesInfo3Ele)
@@ -170,31 +165,22 @@ generateNet=function(decs, rules, type, RulesSetSite, NodeColorType, NewData, Ne
 
     EdgesInfoTemp = as.data.frame(EdgesInfoAll)
     colnames(EdgesInfoTemp) = c('from' , 'to' , 'conn')
-
     EdgesInfoAllSort=t(apply(subset(EdgesInfoTemp, select=c("from", "to")), 1, sort))
     colnames(EdgesInfoAllSort) = c('from' , 'to')
 
     EdgesInfoAllSort2=data.frame(EdgesInfoAllSort,'conn' = EdgesInfoTemp$conn )
-
     EdgesInfo = aggregate(EdgesInfoAllSort2$conn~EdgesInfoAllSort2$from+EdgesInfoAllSort2$to, FUN= function(x) sum(as.numeric(levels(x))[x]))
     colnames(EdgesInfo) = c('from' , 'to' , 'conn')
-    if(dim(EdgesInfo)[1] == 1 )  EdgesInfo$connNorm = 1 else EdgesInfo$connNorm = ((EdgesInfo$conn-min(EdgesInfo$conn))/(max(EdgesInfo$conn)-min(EdgesInfo$conn)))
-
-
-
-    #colnames(EdgesInfo) = c('from' , 'to' , 'conn', 'connNorm')
-    EdgesInfo$label2 = paste0(EdgesInfo$from, '-', EdgesInfo$to )
     #Normalized connection value
-
+    if(dim(EdgesInfo)[1] == 1 )  EdgesInfo$connNorm = 1 else EdgesInfo$connNorm = ((EdgesInfo$conn-min(EdgesInfo$conn))/(max(EdgesInfo$conn)-min(EdgesInfo$conn)))
+    EdgesInfo$label2 = paste0(EdgesInfo$from, '-', EdgesInfo$to )
     EdgesInfo$color = rep('#e5e5e2', length(EdgesInfo$connNorm))
     EdgesInfo$color[which(EdgesInfo$connNorm >= 0.85)] = '#ea1d1d'
     EdgesInfo$color[which(EdgesInfo$connNorm < 0.85 & EdgesInfo$connNorm >= 0.7)] = '#d86431'
     EdgesInfo$color[which(EdgesInfo$connNorm < 0.7 & EdgesInfo$connNorm >= 0.55)] = '#dbcb33'
-
     EdgesTile = paste0('From:  <b>', EdgesInfo$from, '</b><br/>To: <b>', EdgesInfo$to,
                        '</b><br/>Connection: <b>', round(EdgesInfo$conn,2), '</b>')
     EdgesInfo$title = EdgesTile
-
     EdgesInfo$width  = (EdgesInfo$connNorm *5)
 
   }
@@ -214,6 +200,7 @@ generateNet=function(decs, rules, type, RulesSetSite, NodeColorType, NewData, Ne
     }
 
   }
+
 
   Net = list(nodes = NodeInfoDF, edges = EdgesInfo, NodeRulesSetPerNode = NodeRulesSet)
   return(Net)
