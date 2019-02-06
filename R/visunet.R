@@ -12,11 +12,11 @@
 #' visunet(rules)
 #'------------
 #' 'Line by line' format
-#' rules2 = (read.csv2('dataset_ethnicity_all_100set.txt', sep='\t', header = FALSE, col.names = c('FEATURES', 'DECISION', 'ACC_RHS', 'SUPP_RHS'),stringsAsFactors=FALSE))
-#' rules2$ACC_RHS = as.numeric(rules2$ACC_RHS)
-#' rules2$SUPP_RHS = as.numeric(rules2$SUPP_RHS)
-#' rules2$PVAL = 0.05
-#' d2 = visunet(rules2, 'L')
+#' rules = (read.csv2('dataset_ethnicity_all_100set.txt', sep='\t', header = FALSE, col.names = c('FEATURES', 'DECISION', 'ACC_RHS', 'SUPP_RHS'),stringsAsFactors=FALSE))
+#' rules$ACC_RHS = as.numeric(rules$ACC_RHS)
+#' rules$SUPP_RHS = as.numeric(rules$SUPP_RHS)
+#' rules$PVAL = 0.05
+#' d2 = visunet(rules, 'L')
 #'
 visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
   minAcc = 0.7
