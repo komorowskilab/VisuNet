@@ -161,6 +161,7 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
       decisionName = input$decisions
 
       nodes = data[[decisionName]]$nodes
+      print(head(nodes))
       edges = data[[decisionName]]$edges
       validate(
         need(is.null(nodes) == FALSE, "No rules for the current decision. Change the settings")
@@ -199,7 +200,7 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
       data =  data()
       decisionName = input$decisions
       nodes = data[[decisionName]]$nodes
-      datatable(data[[decisionName]]$NodeRulesSetPerNode[[myNode$selected]], options = list(scrollY = TRUE))
+      data[[decisionName]]$NodeRulesSetPerNode[[myNode$selected]]
       #nodes[which(myNode$selected == nodes$id),]
     })
 
