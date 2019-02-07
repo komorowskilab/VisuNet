@@ -73,9 +73,11 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
                                     #visNetworkOutput("network", height = "90%"),
 
                                     fillCol(
-                                      flex = c(5,NA),
+                                      flex = c(5,2),
                                       visNetworkOutput("network", height = "90%"),
-                                      verbatimTextOutput("shiny_return")
+                                      # verbatimTextOutput("shiny_return")
+                                      dataTableOutput("nodes_data_from_shiny"),
+                                      uiOutput('dt_UI')
                                       #  dataTableOutput("nodes_data_from_shiny")
 
                                     )
@@ -170,8 +172,8 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
         visInteraction(hover = TRUE) %>%
         visExport(type = "pdf" , name = "export-network",
                   float = "right", label = "Save network",  style= "")  %>%
-        visEvents(hoverNode = "function(nodes) {
-                  Shiny.onInputChange('current_node_id', nodes);
+        visEvents(select = "function(nodes) {
+                  Shiny.onInputChange('current_node_id', nodes.nodes);
                   ;}")
 
       if( length(nodes$group) >0){
@@ -187,6 +189,29 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
 
   })
 
+    myNode <- reactiveValues(selected = '')
+
+    observeEvent(input$current_node_id, {
+      myNode$selected <<- input$current_node_id
+    })
+
+    output$table <- renderDataTable({
+      data =  data()
+      decisionName = input$decisions
+      nodes = data[[decisionName]]$nodes
+      datatable(data[[decisionName]]$NodeRulesSetPerNode[[myNode$selected]], options = list(scrollY = TRUE))
+      #nodes[which(myNode$selected == nodes$id),]
+    })
+
+    output$dt_UI <- renderUI({
+      data =  data()
+      decisionName = input$decisions
+      nodes = data[[decisionName]]$nodes
+      if(nrow(nodes[which(myNode$selected == nodes$id),])!=0){
+        dataTableOutput('table')
+      } else{}
+
+    })
 
     output$decisions <- renderUI({
       selectInput("decisions",label = h4("Choose decision"), choices =  as.character(decs_f), selected = decs_f[1])
