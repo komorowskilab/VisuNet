@@ -62,7 +62,7 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, N
 
   NodeColor = NULL
 
-  if(NodeColorType == 'GE'){
+  if(NodeColorType == 'DL'){
     #color according to the discrete state - GENE EXPRESSION:
     NodeColor = rep('#999999', length(NodeUniq))
     NodeColor[which(NodeState == min(NodeState))] = '#56B4E9'

@@ -23,7 +23,7 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
   minAcc = 0.7
   minSupp = 1
   minPrecSupp = 10
-  NodeColorType = 'GE'
+  NodeColorType = 'DL'
 
   data_input = function(data1, type){
     #R.Rosetta output
@@ -53,7 +53,7 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
         sliderInput("PrecSupport", ("Min % Support"),
                     min = 0, max = 100, value = minPrecSupp, step = 1),
         numericInput("TopNodes", label = ("Show top n nodes"), value = 0),
-        selectInput("NodeColor",label = ("Color of nodes"), choices =  c('Accuracy value' = 'A','Gene Expression' = 'GE'), selected = NodeColorType),
+        selectInput("NodeColor",label = ("Color of nodes"), choices =  c('Accuracy value' = 'A','Discretization Levels' = 'DL'), selected = NodeColorType),
         actionButton("run", "Run"),
         menuItem("Network", icon = icon("project-diagram"), tabName = "network"),
         menuItem("Legend", icon = icon("sliders"), tabName = "legend"),
@@ -61,16 +61,20 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
       )
     ),
     body <- dashboardBody(
-      tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}"),
+     # tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}"),
       tabItems(
-        tabItem(tabName = 'network',status = "primary", title = 'Network',
+        tabItem(tabName = 'network',title = 'Network',
+              #  fluidRow(box(width=12, title = 'Options', collapsible = TRUE,
+             #                status = 'success',
+             #                solidHeader = TRUE,actionButton("savePDF", "Save Network"))),
                 fluidRow(
                   #adding network
-                  box(width=12, height = 800,
-                      #  tags$head(tags$style(HTML(".tab-pane { height: 70vh; overflow-y: auto; }" ))),
+                  box(width=12, height = 700,
+                      status = "primary",
+                     # tags$head(tags$style(HTML(".tab-pane { height: 70vh; overflow-y: auto; }" ))),
                       solidHeader = TRUE,
-                      collapsible = TRUE,
-                      visNetworkOutput("network", height = "700px"))
+                      collapsible = FALSE,
+                      visNetworkOutput("network", height = "600px"))
 
 
 
@@ -166,12 +170,12 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
     })
 
     output$NodeColor <- renderUI({
-      if(input$ColorNode == 'GE'){
-        colorNodeValue = 'Gene Expression'
+      if(input$ColorNode == 'DL'){
+        colorNodeValue = 'Discretization Levels'
       }else{
         colorNodeValue = 'A'
       }
-      selectInput("NodeColor",label = h4("Color of nodes"), choices =  c('Accuracy value','Gene Expression'), selected = NodeColorType)
+      selectInput("NodeColor",label = h4("Color of nodes"), choices =  c('Accuracy value','Discretization Levels'), selected = NodeColorType)
     })
 
 
@@ -198,6 +202,10 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
       } else{}
 
     })
+
+  #  observeEvent(input$savePDF,{
+  #    visNetwork::visExport(graph = graph,type = "pdf" , name = "export-network")
+  #  })
 
     observeEvent(input$done, {
       stopApp(data())
