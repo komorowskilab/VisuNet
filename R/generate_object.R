@@ -17,8 +17,8 @@ generate_object = function(decs, rules,type, minAcc, minSupp, PercSupp, TopNodes
     #rules filtration
     #.......#
     #generate nodes and edges for decision
-    print(i)
-    print((dim(RulesDec)))
+    #print(i)
+   # print((dim(RulesDec)))
     # print(RulesDec)
     RulesSetSize=dim(RulesDec)[1]
     if(RulesSetSize != 0){
