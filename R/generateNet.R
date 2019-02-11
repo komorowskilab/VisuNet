@@ -1,4 +1,4 @@
-generateNet=function(decs, rules, type, RulesSetSite, NodeColorType, NewData, NewDataValues){
+generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, NewData, NewDataValues){
   # rules = recRulesFiltr
   # print(rules)
   if(type == 'RDF'){
@@ -141,8 +141,15 @@ generateNet=function(decs, rules, type, RulesSetSite, NodeColorType, NewData, Ne
   #                        'meanAcc' = meanAcc, 'meanSupp' = meanSupp, 'meanPrecSupp' = meanPrecSupp, 'NRules' = NRules,
   #                        'PrecRules' = PrecRules, 'NodeConnection' = NodeConnection, 'title' = NodeTitle)
 
+  #print(dim(NodeInfoDF)[1])
+  validate(
+    need((TopNodes > dim(NodeInfoDF)[1]) == FALSE, "Top Nodes value too high!")
+  )
 
+  if(TopNodes != 0 & TopNodes <= dim(NodeInfoDF)[1]){
+    NodeInfoDF = NodeInfoDF[1:TopNodes,]
 
+  }
 
   #edges
   AllRuleLen = (lapply(Nodes_vec, length))
