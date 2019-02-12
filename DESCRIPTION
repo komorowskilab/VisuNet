@@ -12,12 +12,10 @@ Imports:
     shiny,
     shinydashboard,
     shinythemes,
-    miniUI,
     R.ROSETTA
 Remotes: 
     datastorm-open/visNetwork,
     rstudio/shinydashboard,
-    rstudio/miniUI,
     mategarb/R.ROSETTA
 RoxygenNote: 6.1.1
 Suggests: 

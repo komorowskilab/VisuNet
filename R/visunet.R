@@ -1,11 +1,10 @@
 #' Rule Network Visualistion gadget
-#' @import visNetwork shiny shinythemes miniUI R.ROSETTA
+#' @import visNetwork shiny shinythemes R.ROSETTA
 #' @param rule table
 #' @return Rule Network Object.
 #' @keywords misc
 #' @export
 #' @examples
-#'
 #' R.ROSETTA output
 #' out=rosetta(autcon)
 #' rules=out$main
