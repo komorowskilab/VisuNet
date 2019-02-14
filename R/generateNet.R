@@ -142,13 +142,13 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, N
   #                        'PrecRules' = PrecRules, 'NodeConnection' = NodeConnection, 'title' = NodeTitle)
 
   #print(dim(NodeInfoDF)[1])
-  validate(
-    need((TopNodes > dim(NodeInfoDF)[1]) == FALSE, "Top Nodes value too high!")
-  )
+
 
   if(TopNodes != 0 & TopNodes <= dim(NodeInfoDF)[1]){
     NodeInfoDF = NodeInfoDF[1:TopNodes,]
 
+  }else if(TopNodes > dim(NodeInfoDF)[1]){
+    NodeInfoDF =  NodeInfoDF
   }
 
   #edges

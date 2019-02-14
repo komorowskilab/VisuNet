@@ -28,12 +28,10 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
     #R.Rosetta output
     if(type == 'RDF'){
       df = data1
-
     }else if(type == 'L'){
       df = data1
     }else if(type == 'RF'){
       #Rosetta output format
-
     }else{
       print('Invalid data type!')
     }
@@ -63,9 +61,11 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
      # tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}"),
       tabItems(
         tabItem(tabName = 'network',title = 'Network',
-              #  fluidRow(box(width=12, title = 'Options', collapsible = TRUE,
-             #                status = 'success',
-             #                solidHeader = TRUE,actionButton("savePDF", "Save Network"))),
+                fluidRow(box(width=12, title = 'Options', collapsible = TRUE,
+                             status = 'success',
+                             solidHeader = TRUE,
+                             downloadButton('saveHTML', 'Save network as .html')
+                             )),
                 fluidRow(
                   #adding network
                   box(width=12, height = 700,
@@ -119,16 +119,14 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
       #return(list(data_input = data_input, TopNodes = TopNodes))
     })
 
-    output$network <- renderVisNetwork({
+    #output$network <- renderVisNetwork({
+    net <- reactive({
       data = data()
       # TopNodes = data$TopNodes
       # data =  data$data_input
 
       decisionName = input$decisions
-
       nodes = data[[decisionName]]$nodes
-
-      #print(head(nodes))
       edges = data[[decisionName]]$edges
       validate(
         need(is.null(nodes) == FALSE, "No rules for the current decision. Change the settings")
@@ -139,8 +137,9 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
         visLayout(randomSeed = 123) %>%
         visPhysics(enabled = TRUE) %>%
         visInteraction(hover = TRUE) %>%
-        visExport(type = "pdf" , name = "export-network",
-                  float = "right", label = "Save network",  style= "")  %>%
+        visEdges(smooth = TRUE) %>%
+       # visExport(name = "export-network",
+       #           float = "right", label = "Save network",  style= "")  %>%
         visEvents(select = "function(nodes) {
                   Shiny.onInputChange('current_node_id', nodes.nodes);
                   ;}")
@@ -158,12 +157,14 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
 
   })
 
+    output$network <- renderVisNetwork({
+      net()
+  })
     output$decisions <- renderUI({
       selectInput("decisions",label = ("Choose decision"), choices =  as.character(decs_f), selected = decs_f[1])
     })
 
     output$support <- renderUI({
-      #selectInput("support",label = h4("Min Support"), choices =  as.character(decs_f), selected = decs_f[1])
       sliderInput("support", ("Min Support"),
                   min = 0, max = max(rules$SUPP_RHS), value = minSupp, step = 1)
     })
@@ -189,7 +190,6 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
       decisionName = input$decisions
       nodes = data[[decisionName]]$nodes
       data[[decisionName]]$NodeRulesSetPerNode[[myNode$selected]]
-      #nodes[which(myNode$selected == nodes$id),]
     })
 
     output$dt_UI <- renderUI({
@@ -202,9 +202,14 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
 
     })
 
-  #  observeEvent(input$savePDF,{
-  #    visNetwork::visExport(graph = graph,type = "pdf" , name = "export-network")
-  #  })
+    output$saveHTML <- downloadHandler(
+      filename = function() {
+        paste('network-', Sys.Date(), '.html', sep='')
+      },
+      content = function(con) {
+        net() %>% visSave(con)
+      }
+    )
 
     observeEvent(input$done, {
       stopApp(data())
