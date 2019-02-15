@@ -19,24 +19,16 @@
 #'
 
 visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
-  minAcc = 0.7
-  minSupp = 1
-  minPrecSupp = 10
-  NodeColorType = 'DL'
 
-  data_input = function(data1, type){
-    #R.Rosetta output
-    if(type == 'RDF'){
-      df = data1
-    }else if(type == 'L'){
-      df = data1
-    }else if(type == 'RF'){
-      #Rosetta output format
-    }else{
-      print('Invalid data type!')
-    }
-    return(df)
-  }
+
+
+  rules = data_input(data1, type)
+  rules_10per_param = filtration_rules_10per(rules)
+
+  minAcc = rules_10per_param$minAcc
+  minSupp = rules_10per_param$minSupp
+  minPrecSupp = rules_10per_param$minPrecSupp
+  NodeColorType = 'DL'
 
   ui <- dashboardPage(
     header <- dashboardHeader(title = "VisuNet", tags$li(class = "dropdown", actionButton("done", "Done"))),
@@ -75,9 +67,6 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
                       collapsible = FALSE,
                       visNetworkOutput("network", height = "600px"))
 
-
-
-
                 ),
                 #,
                 fluidRow(
@@ -104,27 +93,25 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
   server <- function(input, output) {
 
 
-    rules = data_input(data1, type)
+
     decs = unique(as.matrix(rules$DECISION))
-    decs_f = c(decs, 'all')
+    decs_f = c('all', decs )
 
     data <- eventReactive( input$run, {
       validate(
         filter_rules(rules, input$accuracy, input$support, input$PrecSupport)
       )
-      #TopNodes = input$TopNodes
-      data_input=generate_object(decs, rules,type, input$accuracy, input$support, input$PrecSupport,input$TopNodes, input$NodeColor, NewData, NewDataValues)
-
-
+      RulesFiltr =  filtration_rules(rules, input$accuracy, input$support, input$PrecSupport)
+      #print(dim(RulesFiltr))
+      data_input=generate_object(decs, RulesFiltr,type, input$TopNodes, input$NodeColor, NewData, NewDataValues)
+      data_input[['Rules']] = rules
+      return(data_input)
       #return(list(data_input = data_input, TopNodes = TopNodes))
     })
 
     #output$network <- renderVisNetwork({
     net <- reactive({
       data = data()
-      # TopNodes = data$TopNodes
-      # data =  data$data_input
-
       decisionName = input$decisions
       nodes = data[[decisionName]]$nodes
       edges = data[[decisionName]]$edges
@@ -138,8 +125,8 @@ visunet = function(data1, type ='RDF',  NewData=FALSE, NewDataValues){
         visPhysics(enabled = TRUE) %>%
         visInteraction(hover = TRUE) %>%
         visEdges(smooth = TRUE) %>%
-       # visExport(name = "export-network",
-       #           float = "right", label = "Save network",  style= "")  %>%
+        #visExport(name = "export-network",
+        #          float = "right", label = "Save network",  style= "")  %>%
         visEvents(select = "function(nodes) {
                   Shiny.onInputChange('current_node_id', nodes.nodes);
                   ;}")

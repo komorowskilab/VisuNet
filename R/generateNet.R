@@ -1,13 +1,9 @@
 generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, NewData, NewDataValues){
-  # rules = recRulesFiltr
-  # print(rules)
   if(type == 'RDF'){
     vec = as.character(as.matrix(rules["FEATURES"]))
     lst1 = sapply(vec, function(x) strsplit(x, ","))
     vec2 = as.character(as.matrix(rules["DISC_CLASSES"]))
     lst2 = sapply(vec2, function(x) strsplit(x, ","))
-    #print(lst1)
-    #print(lst2)
     newLst = mapply(paste, collapse = ",", sep = "=", lst1,
                     lst2)
     NodeID = as.character(unname(newLst))
@@ -15,8 +11,6 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, N
   }else{
     rules$id = as.matrix(rules$FEATURES)
   }
-
-  #nodeLabel = unique(cbind(unlist(strsplit(as.matrix(label),',')),unlist(strsplit(as.matrix(vec),','))))
   # Rule connection value
   rules$CONNECTION = rules$SUPP_RHS * rules$ACC_RHS
   #Node information
