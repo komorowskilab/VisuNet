@@ -3,7 +3,12 @@ Title: Visualizing Networks of feature interaction in rules
 Version: 1.0.0
 Authors@R: person("Karolina", "Smolinska-Garbulowska", email = "karolina.smolinska@icm.uu.se", role = c("aut", "cre"))
 Description: Visualizing Networks of feature interaction in rules.
-Depends: R (>= 3.5.0)
+Depends: R (>= 3.5.0),
+    visNetwork,
+    shiny,
+    shinydashboard,
+    shinythemes,
+    R.ROSETTA
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
