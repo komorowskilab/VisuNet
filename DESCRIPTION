@@ -1,6 +1,6 @@
 Package: VisuNet
 Title: Visualizing Networks of feature interaction in rules
-Version: 0.0.0.9000
+Version: 1.0.0
 Authors@R: person("Karolina", "Smolinska-Garbulowska", email = "karolina.smolinska@icm.uu.se", role = c("aut", "cre"))
 Description: Visualizing Networks of feature interaction in rules.
 Depends: R (>= 3.5.0)
@@ -12,7 +12,7 @@ Imports:
     shiny,
     shinydashboard,
     shinythemes,
-    R.ROSETTA
+    R.ROSETTA,
 Remotes: 
     datastorm-open/visNetwork,
     rstudio/shinydashboard,
