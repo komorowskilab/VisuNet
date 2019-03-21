@@ -12,7 +12,7 @@ Imports:
     shiny,
     shinydashboard,
     shinythemes,
-    R.ROSETTA,
+    R.ROSETTA
 Remotes: 
     datastorm-open/visNetwork,
     rstudio/shinydashboard,
