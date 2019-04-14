@@ -16,6 +16,7 @@ generate_object = function(decs, rules,type,  TopNodes,  NodeColorType,  NewData
    # print((dim(RulesDec)))
     # print(RulesDec)
     RulesSetSize=dim(RulesDec)[1]
+    #print(dim(RulesDec))
     if(RulesSetSize != 0){
       Net = generateNet(i, RulesDec, type, RulesSetSize, TopNodes, NodeColorType = NodeColorType, NewData, NewDataValues )
     }else{

@@ -2,7 +2,6 @@
 
 export(visunet)
 import(R.ROSETTA)
-import(miniUI)
 import(shiny)
 import(shinythemes)
 import(visNetwork)

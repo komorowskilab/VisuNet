@@ -1,8 +1,9 @@
 filtration_rules_10per = function(rules){
+  fraction=0.1
   rules$CONNECTION = rules$SUPP_RHS * rules$ACC_RHS
   rules_order = rules[order(rules$CONNECTION, decreasing = TRUE),]
   decisions = unique(rules_order$DECISION)
-  n_10per = (round(dim(rules_order)[1]*0.01, digits = 0))
+  n_10per = (round(dim(rules_order)[1]*fraction, digits = 0))
   rules_order_10perc = rules_order[1:n_10per,]
   diff_decisions = (setdiff(decisions, unique(rules_order_10perc$DECISION) ))
   if(length(diff_decisions) != 0){

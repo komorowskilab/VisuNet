@@ -1,9 +1,10 @@
 generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, NewData, NewDataValues){
   if(type == 'RDF'){
     vec = as.character(as.matrix(rules["FEATURES"]))
-    lst1 = sapply(vec, function(x) strsplit(x, ","))
+    lst1 = sapply(vec, function(x) strsplit(x, ",", fixed = TRUE))
+    #print(rules["DISC_CLASSES"])
     vec2 = as.character(as.matrix(rules["DISC_CLASSES"]))
-    lst2 = sapply(vec2, function(x) strsplit(x, ","))
+    lst2 = sapply(vec2, function(x) strsplit(x, ",", fixed = TRUE))
     newLst = mapply(paste, collapse = ",", sep = "=", lst1,
                     lst2)
     NodeID = as.character(unname(newLst))
@@ -16,7 +17,8 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, N
   #Node information
   Nodes_vec=sapply(rules$id, function(x) strsplit(x, ","))
   NodeUniq=unique(unlist(Nodes_vec))
-
+  #print(Nodes_vec)
+  #print(NodeUniq)
   NodeInfoDF = NULL
   NodeState = NULL
   meanAcc = NULL
@@ -27,12 +29,18 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, N
   NodeConnection = NULL
   NodeRulesSet = NULL
   DecisionSet = NULL
+  node_id = NULL
   for (nod in NodeUniq){
     #nod = 'MAP7=3'
     #nod = "MXRA7_Activated_4=3"
+    node_id = NULL
+    #print(lapply(Nodes_vec, function(x)  length(which(x == nod) )))
+
     node_id = (which(lapply(Nodes_vec, function(x)  length(which(x == nod) )) !=0))
+    #print(node_id)
     # print(nod)
     #discrete state
+
     NodeState = c(NodeState,strsplit(nod, '=')[[1]][2])
 
     #mean accuracy
@@ -47,8 +55,10 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, N
     PrecRules = c(PrecRules, dim(rules[node_id,])[1] / dim(rules)[1] )
     # Connection value
     NodeConnection = c(NodeConnection, sum(rules[node_id,]$CONNECTION * (unlist((lapply(Nodes_vec[node_id], length)))-1)))
+
     #Set of rules per Node
     NodeRulesSet[[nod]] = viewRules(rules[node_id,])
+    #print(NodeRulesSet[[nod]])
     DecisionSet = c(DecisionSet, names(sort(table(rules[node_id, "DECISION"]),decreasing=TRUE)[1]))
 
   }
@@ -168,7 +178,6 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, N
     colnames(EdgesInfoTemp) = c('from' , 'to' , 'conn')
     EdgesInfoAllSort=t(apply(subset(EdgesInfoTemp, select=c("from", "to")), 1, sort))
     colnames(EdgesInfoAllSort) = c('from' , 'to')
-
     EdgesInfoAllSort2=data.frame(EdgesInfoAllSort,'conn' = EdgesInfoTemp$conn )
     EdgesInfo = aggregate(EdgesInfoAllSort2$conn~EdgesInfoAllSort2$from+EdgesInfoAllSort2$to, FUN= function(x) sum(as.numeric(levels(x))[x]))
     colnames(EdgesInfo) = c('from' , 'to' , 'conn')

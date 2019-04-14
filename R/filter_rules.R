@@ -1,4 +1,5 @@
 filter_rules = function(rules, minAcc, minSupp, PercSupp){
+
   if(length(rules$PERC_SUPP_RHS ) > 0){
     if(max(rules$PERC_SUPP_RHS) < PercSupp){
       'Please change min % Support value. Your value is too high!'
@@ -9,6 +10,7 @@ filter_rules = function(rules, minAcc, minSupp, PercSupp){
       NULL
     }
   }else{
+    #print(max(rules$SUPP_RHS))
     if(max(rules$SUPP_RHS) < minSupp){
       'Please change min Support value. Your value is too high!'
     }else if(max(rules$ACC_RHS) < minAcc){

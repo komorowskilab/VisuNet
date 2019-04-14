@@ -4,7 +4,7 @@
 \name{VisuNet-package}
 \alias{VisuNet}
 \alias{VisuNet-package}
-\title{VisuNet}
+\title{Rule Network Visualistion gadget}
 \description{
 This is a mostly empty package to learn roxygen documentation.
 }
