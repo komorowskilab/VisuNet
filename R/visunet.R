@@ -32,6 +32,7 @@
 #' out = rosetta(autcon)
 #' rules = out$main
 #' vis_out = visunet(rules)
+#'
 #'------------
 #' Line by line file
 #' rules = (read.csv2('dataset_ethnicity_all_100set.txt', sep='\t', header = FALSE, col.names = c('FEATURES', 'DECISION', 'ACC_RHS', 'SUPP_RHS'),stringsAsFactors=FALSE))
