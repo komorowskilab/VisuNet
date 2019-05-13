@@ -1,4 +1,4 @@
-generate_object = function(decs, rules,type,  TopNodes,  NodeColorType,  NewData, NewDataValues){
+generate_object = function(decs, rules,type,  TopNodes,  NodeColorType,  NewDataNodes, NewDataEdges){
 
   #print(dim(recRulesFiltr))
   AllNets = NULL
@@ -18,7 +18,8 @@ generate_object = function(decs, rules,type,  TopNodes,  NodeColorType,  NewData
     RulesSetSize=dim(RulesDec)[1]
     #print(dim(RulesDec))
     if(RulesSetSize != 0){
-      Net = generateNet(i, RulesDec, type, RulesSetSize, TopNodes, NodeColorType = NodeColorType, NewData, NewDataValues )
+      #print(NewDataNodes)
+      Net = generateNet(i, RulesDec, type, RulesSetSize, TopNodes, NodeColorType = NodeColorType, NewDataNodes, NewDataEdges)
     }else{
       Net = list(nodes = NULL, edges = NULL, NodeRulesSetPerNode = NULL)
     }
@@ -29,7 +30,7 @@ generate_object = function(decs, rules,type,  TopNodes,  NodeColorType,  NewData
   }
   if(dim(rules)[1] != 0){
     AllNets[['all']] = generateNet('all', rules, type, dim(recRulesFiltr)[1], TopNodes,  NodeColorType = NodeColorType,
-                                   NewData, NewDataValues)
+                                   NewDataNodes, NewDataEdges)
   }else{
     AllNets[['all']] = list(nodes = NULL, edges = NULL, NodeRulesSetPerNode = NULL)
   }

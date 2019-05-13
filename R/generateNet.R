@@ -1,8 +1,7 @@
-generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, NewData, NewDataValues){
+generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  NewDataNodes, NewDataEdges){
   if(type == 'RDF'){
     vec = as.character(as.matrix(rules["FEATURES"]))
     lst1 = sapply(vec, function(x) strsplit(x, ",", fixed = TRUE))
-    #print(rules["DISC_CLASSES"])
     vec2 = as.character(as.matrix(rules["DISC_CLASSES"]))
     lst2 = sapply(vec2, function(x) strsplit(x, ",", fixed = TRUE))
     newLst = mapply(paste, collapse = ",", sep = "=", lst1,
@@ -17,8 +16,6 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, N
   #Node information
   Nodes_vec=sapply(rules$id, function(x) strsplit(x, ","))
   NodeUniq=unique(unlist(Nodes_vec))
-  #print(Nodes_vec)
-  #print(NodeUniq)
   NodeInfoDF = NULL
   NodeState = NULL
   meanAcc = NULL
@@ -31,18 +28,10 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, N
   DecisionSet = NULL
   node_id = NULL
   for (nod in NodeUniq){
-    #nod = 'MAP7=3'
-    #nod = "MXRA7_Activated_4=3"
     node_id = NULL
-    #print(lapply(Nodes_vec, function(x)  length(which(x == nod) )))
-
     node_id = (which(lapply(Nodes_vec, function(x)  length(which(x == nod) )) !=0))
-    #print(node_id)
-    # print(nod)
     #discrete state
-
     NodeState = c(NodeState,strsplit(nod, '=')[[1]][2])
-
     #mean accuracy
     meanAcc = c(meanAcc,mean(rules[node_id,"ACC_RHS"]))
     #mean support
@@ -58,9 +47,7 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, N
 
     #Set of rules per Node
     NodeRulesSet[[nod]] = viewRules(rules[node_id,])
-    #print(NodeRulesSet[[nod]])
-    DecisionSet = c(DecisionSet, names(sort(table(rules[node_id, "DECISION"]),decreasing=TRUE)[1]))
-
+    DecisionSet = c(DecisionSet, paste0(names(sort(table(rules[node_id, "DECISION"]),decreasing=TRUE)), collapse=','))
   }
 
 
@@ -105,7 +92,6 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, N
 
 
   if (is.na(meanPrecSupp)[1] == FALSE){
-    #print('YES')
     NodeTitle = paste0('Name: <b>', NodeUniq, '</b><br/>Edges: <b>', NRules, '</b><br/>Connection: <b>',  round(NodeConnection,2),
                        '</b><br/>Mean accuracy: <b>', round(meanAcc,2), '</b><br/>Mean % support: <b>', round(meanPrecSupp,2))
     #Node Info data frame
@@ -114,7 +100,6 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, N
                             meanAcc = meanAcc, meanSupp = meanSupp, meanPERC_SUPP = meanPrecSupp, NRules = NRules,
                             PrecRules = PrecRules, NodeConnection = NodeConnection, title = NodeTitle)
   }else{
-    #print('NO')
     NodeTitle = paste0('Name: <b>', NodeUniq, '</b><br/>Edges: <b>', NRules, '</b><br/>Connection: <b>',  round(NodeConnection,2),
                        '</b><br/>Mean accuracy: <b>', round(meanAcc,2), '</b><br/>Mean support: <b>', round(meanSupp,2))
     #Node Info data frame
@@ -128,7 +113,7 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, N
     NodeInfoDF$group = DecisionSet
   }
 
-  #NodeInfoDF$font.size = 12
+  NodeInfoDF$font.size = 20
 
   # NodeTitle = paste0('Name: <b>', NodeUniq, '</b><br/>Edges: <b>', NRules, '</b><br/>Connection: <b>',  round(NodeConnection,2),
   #                   '</b><br/>Mean accuracy: <b>', round(meanAcc,2), '</b><br/>Mean % support: <b>', round(meanPrecSupp,2))
@@ -140,13 +125,6 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, N
 
 
   NodeInfoDF = NodeInfoDF[order(NodeInfoDF$NodeConnection, decreasing = TRUE),]
-  #Node Info data frame
-  #NodeInfoDF = data.frame('NodeUniq' = NodeUniq,  'NodeLabel' = NodeUniq, 'DiscState' = NodeState, 'NodeColor' = NodeColor,
-  #                        'meanAcc' = meanAcc, 'meanSupp' = meanSupp, 'meanPrecSupp' = meanPrecSupp, 'NRules' = NRules,
-  #                        'PrecRules' = PrecRules, 'NodeConnection' = NodeConnection, 'title' = NodeTitle)
-
-  #print(dim(NodeInfoDF)[1])
-
 
   if(TopNodes != 0 & TopNodes <= dim(NodeInfoDF)[1]){
     NodeInfoDF = NodeInfoDF[1:TopNodes,]
@@ -159,8 +137,6 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, N
   AllRuleLen = (lapply(Nodes_vec, length))
   EdgesInfo = NULL
   if(length(which(AllRuleLen !=1)) != 0){
-
-    #print(AllRuleLen)
     rules2elem = which(AllRuleLen == 2)
     EdgesInfo2Ele=cbind(do.call(rbind,Nodes_vec[rules2elem]), rules[rules2elem,c("CONNECTION")])
 
@@ -195,19 +171,64 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType, N
 
   }
 
-  if(NewData == TRUE){
-    if(NewDataValues$type == 'nodes'){
-
-      new_columns =   (NewDataValues$df_values[(match(NodeInfoDF$id, NewDataValues$df_values$id )), 2:dim(NewDataValues$df_values)[2]])
-      NodeInfoDF = cbind(NodeInfoDF[ , !(names(  NodeInfoDF) %in% colnames(new_columns))], new_columns)
-      #View(head(cbind(NodeInfoDF, new_columns)))
-      # NodeInfoDF[colnames(new_columns)]
-    }else if(NewDataValues$type == 'edges'){
-      new_columns =   (NewDataValues$df_values[(match(EdgesInfo$label, NewDataValues$df_values$label )), 2:dim(NewDataValues$df_values)[2]])
-      EdgesInfo = cbind(EdgesInfo[ , !(names(  EdgesInfo) %in% colnames(new_columns))], new_columns)
-    }else{
-      print('Wrong data type!')
+  if(length(NewDataNodes)>0){
+   # NodeInfoDF = CustObject_function(NodeInfoDF, NewDataNodes$nodes, NewDataNodes$CustCol, 'id')
+    NewDataNodesDF = NewDataNodes$nodes
+    CustCol = NewDataNodes$CustCol
+    NEWNodeInfoDF = NodeInfoDF
+    ind_Col = which(CustCol %in% colnames(NEWNodeInfoDF))
+    NewDataNodesDF$id = as.character(unlist(NewDataNodesDF$id))
+    NEWNodeInfoDF$id = as.character(unlist(NEWNodeInfoDF$id))
+    int_id = intersect((NewDataNodesDF$id), (NEWNodeInfoDF$id))
+    NewDataNodesDF_int =  NewDataNodesDF[(which(as.character(NewDataNodesDF$id) %in% int_id)),]
+    if(length(ind_Col)>0){
+    for(i in 1:length(ind_Col)){
+      NEWNodeInfoDF[CustCol[ind_Col[i]]] = as.character(unlist(NEWNodeInfoDF[CustCol[ind_Col[i]]]))
+      NewDataNodesDF[CustCol[ind_Col[i]]] = as.character(unlist(NewDataNodesDF[CustCol[ind_Col[i]]]))
+      NEWNodeInfoDF[match(  NewDataNodesDF_int$id, as.character(NEWNodeInfoDF$id)),CustCol[ind_Col[i]]] = NewDataNodesDF_int[CustCol[ind_Col[i]]]
     }
+
+    ind_Col_diff = CustCol[setdiff(seq(1, length(CustCol)),ind_Col)]
+    }else{ind_Col_diff = CustCol}
+    for(i in 1:length(ind_Col_diff)){
+      NEWNodeInfoDF$newcolumn = rep(NA, length(NEWNodeInfoDF$id))
+      colnames(NEWNodeInfoDF)[which(colnames(NEWNodeInfoDF) == 'newcolumn')] = ind_Col_diff[i]
+      NewDataNodesDF[ind_Col_diff[i]] = as.character(unlist(NewDataNodesDF[ind_Col_diff[i]]))
+
+      NEWNodeInfoDF[match(  NewDataNodesDF_int$id, as.character(NEWNodeInfoDF$id)),ind_Col_diff[i]] = NewDataNodesDF_int[ind_Col_diff[i]]
+
+    }
+    NodeInfoDF = NEWNodeInfoDF
+
+  }
+  if(length(NewDataEdges) != 0){
+    NewDataEdgesDF = NewDataEdges$edges
+    CustCol = NewDataEdges$CustCol
+    NEWEdgesInfoDF = EdgesInfo
+    ind_Col = which(CustCol %in% colnames(NEWEdgesInfoDF))
+    NewDataEdgesDF$label2 = as.character(unlist(NewDataEdgesDF$label2))
+    NEWEdgesInfoDF$label2 = as.character(unlist(NEWEdgesInfoDF$label2))
+    int_id = intersect((NewDataEdgesDF$label2), (NEWEdgesInfoDF$label2))
+    NewDataEdgesDF_int =  NewDataEdgesDF[(which(as.character(NewDataEdgesDF$label2) %in% int_id)),]
+    if(length(ind_Col)>0){
+      for(i in 1:length(ind_Col)){
+        NEWEdgesInfoDF[CustCol[ind_Col[i]]] = as.character(unlist(NEWEdgesInfoDF[CustCol[ind_Col[i]]]))
+        NewDataEdgesDF[CustCol[ind_Col[i]]] = as.character(unlist(NewDataEdgesDF[CustCol[ind_Col[i]]]))
+        NEWEdgesInfoDF[match(  NewDataEdgesDF_int$label2, as.character(NEWEdgesInfoDF$label2)),CustCol[ind_Col[i]]] = NewDataEdgesDF_int[CustCol[ind_Col[i]]]
+      }
+
+      ind_Col_diff = CustCol[setdiff(seq(1, length(CustCol)),ind_Col)]
+    }else{ind_Col_diff = CustCol}
+    for(i in 1:length(ind_Col_diff)){
+      NEWEdgesInfoDF$newcolumn = rep(NA, length(NEWEdgesInfoDF$label2))
+      colnames(NEWEdgesInfoDF)[which(colnames(NEWEdgesInfoDF) == 'newcolumn')] = ind_Col_diff[i]
+      NewDataEdgesDF[ind_Col_diff[i]] = as.character(unlist(NewDataEdgesDF[ind_Col_diff[i]]))
+
+      NEWEdgesInfoDF[match(  NewDataEdgesDF_int$label2, as.character(NEWEdgesInfoDF$label2)),ind_Col_diff[i]] = NewDataEdgesDF_int[ind_Col_diff[i]]
+
+    }
+    EdgesInfo = NEWEdgesInfoDF
+
 
   }
 

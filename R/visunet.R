@@ -8,49 +8,84 @@
 
 #' visunet
 #' @import visNetwork shiny shinythemes R.ROSETTA
-#' @param rules data frame or path to the rules file, depending on the values of the type parameter.\cr
-#' In the case of data frame, rule is the output of \code{\link[R.ROSETTA]{rosetta}}. The rules file
-#' is the output of \code{\link[R.ROSETTA]{rosetta}} saved using \code{\link[R.ROSETTA]{saveLineByLine}}
-#' or the output of the ROSETTA GUI version (see \url{http://bioinf.icm.uu.se/rosetta/}).
+#' @param rules data frame with rules information. Required at least four columns: "FEATURES",
+#' "ACC_RHS", "SUPP_RHS" and "DECISION" and each row corresponds to one rule.\cr
+#' See the output of \code{\link[R.ROSETTA]{rosetta}} for the information about the rules data frame structure.
 #'
 #' @param type  character string specifying the type of the input data.  Three types implemented
-#' are "RDF" (the R.ROSETTA data frame), "L" ("Line by line" file format) and "RGUI" (ROSETTA GUI plan format). \cr
-#' The "Line by line" is the tab-separated file, each row corresponds to one rule. File contains 4 or 5 columns:
-#' condition list, decision, accuracy and support of the rule, the optional 5th column contains a fractional support value\cr
+#' are "RDF" - the R.ROSETTA output (see \code{\link[R.ROSETTA]{rosetta}}), "L" - "Line by line" file format (see \code{\link[R.ROSETTA]{saveLineByLine}})
 #'The default is "RDF".
 #'
-#' @param Cust logical flag: if TRUE the CustObject is customised Rule Network Object, otherwise the
-#' CustObject parameter is ignored.
-#' @param CustObject customised Rule Network Object corresponding to the output of the visunet function,
-#' that can be modified according
-#' to the visualisation aim. See more in the details section.
+#' @param NodeColorType character string specifying the color of nodes.
+#' \itemize{
+#'   \item "DL" - feature discretization levels
+#'   \item "A" - feature distratization value
+#' }
+#'The default is "DL".
+#'
+#' @param CustObjectNodes a list that contains customised VisuNet output for nodes. List need
+#' to contain two variables:
+#'\itemize{
+#'   \item nodes - customized VisuNet output for nodes
+#'   \item CustCol - names of variables added/changed in the VisuNet output for nodes.
+#'   See \code{\link[visNetwork]{visNodes}} for the full list of available variables.
+#' }
+#' Example use in the example section
+#'
+#' @param CustObjectEdges a list that contains customised VisuNet output for edges. List need
+#' to contain two variables:
+#'\itemize{
+#'   \item edges - customized VisuNet output for nodes
+#'   \item CustCol - names of variables added/changed in the VisuNet output for nodes.
+#'   See \code{\link[visNetwork]{visEdges}} for the full list of available variables.
+#' }
+#' Example use in the example section
+#'
 #' @return Rule Network Object.
 #' @keywords misc
 #' @export
 #' @examples
-#' R.ROSETTA output
+#'
+#' #R.ROSETTA output
 #' out = rosetta(autcon)
 #' rules = out$main
 #' vis_out = visunet(rules)
-#'
 #'------------
-#' Line by line file
-#' rules = (read.csv2('dataset_ethnicity_all_100set.txt', sep='\t', header = FALSE, col.names = c('FEATURES', 'DECISION', 'ACC_RHS', 'SUPP_RHS'),stringsAsFactors=FALSE))
+#' #"Line by line" file format
+#' rules = (read.csv2('LbL.txt', sep='\t', header = FALSE, col.names = c('FEATURES', 'DECISION', 'ACC_RHS', 'SUPP_RHS'),stringsAsFactors=FALSE))
 #' rules$ACC_RHS = as.numeric(rules$ACC_RHS)
 #' rules$SUPP_RHS = as.numeric(rules$SUPP_RHS)
 #' rules$PVAL = 0.05
 #' vis_out = visunet(rules, 'L')
 #'
+#'------------
+#'#customisation of the VisuNet output for nodes
+#'nodes_RNO <- vis_out$all$nodes
+#'#Changing the nodes shape to stars
+#'nodes_RNO$shape <- rep('star', length(nodes_RNO$label))
+#'# a customized nodes list
+#'nodesL <- list(nodes = nodes_RNO,CustCol =  c('shape'))
+#'Rerun VisuNet with a customized nodes list
+#'vis_out2 <- visunet(rules, CustObjectNodes = nodesL
+#'
+#'------------
+#'customisation of VisuNet output for edges
+#'Adding arrows to edges
+#'edges_RNO <- vis_out$all$edges
+#'edges_RNO$arrows <- rep('to', length(edges_RNO$label2))
+#'# a customized edges list
+#'edgesL <- list(edges = edges_RNO,CustCol =   c('arrows'))
+#'Rerun VisuNet with a customized edges list
+#'vis_out3 <- visunet(rules, CustObjectEdges = edgesL)
 
-visunet = function(rules, type ='RDF', NodeColorType = 'DL', Cust=FALSE, CustObject){
 
+
+visunet = function(rules, type ='RDF', NodeColorType = 'DL',  CustObjectNodes=list(), CustObjectEdges=list()){
   rules = data_input(rules, type)
   rules_10per_param = filtration_rules_10per(rules)
-
   minAcc = rules_10per_param$minAcc
   minSupp = rules_10per_param$minSupp
-  minPrecSupp = rules_10per_param$minPrecSupp
-  #NodeColorType = 'DL'
+
 
   ui <- dashboardPage(
     header <- dashboardHeader(title = "VisuNet", tags$li(class = "dropdown", actionButton("done", "Done"))),
@@ -61,40 +96,20 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL', Cust=FALSE, CustObj
         sliderInput("accuracy", ("Min Accuracy"),
                     min = 0, max = 1, value = minAcc, step = 0.01),
         uiOutput("support"),
-        sliderInput("PrecSupport", ("Min % Support"),
-                    min = 0, max = 100, value = minPrecSupp, step = 1),
         numericInput("TopNodes", label = ("Show top n nodes"), value = 0),
         selectInput("NodeColor",label = ("Color of nodes"), choices =  c('Accuracy value' = 'A','Discretization Levels' = 'DL'), selected = NodeColorType),
 
-      #  sliderInput("deg", "Degree :", min = 0, max = 10, value = 0),
-       # checkboxInput("highlightNearestSelect", "Select node ?", FALSE),
         actionButton("run", "Run"),
         downloadButton('saveHTML', 'Save network as .html'),
-        menuItem("Network", icon = icon("project-diagram"), tabName = "network"),
-        menuItem("Legend", icon = icon("sliders"), tabName = "legend"),
-        menuItem("About", icon = icon("user-astronaut"), tabName = "about")
+        menuItem("Network", icon = icon("project-diagram"), tabName = "network") ,
+        menuItem("Legend", icon = icon("sliders"), tabName = "legend")#,
+        #menuItem("About", icon = icon("user-astronaut"), tabName = "about")
       )
     ),
     body <- dashboardBody(
      # tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}"),
       tabItems(
         tabItem(tabName = 'network',title = 'Network',
-             #   fluidRow(
-                  #box( title = 'Options', background = "aqua", collapsible = TRUE,
-                  #           #status = 'success',
-                  #           solidHeader = TRUE,
-
-                  #           uiOutput("Select")
-
-               # ),
-
-
-             #   box( title = 'Options', collapsible = TRUE,
-              #               status = 'success',
-              #               solidHeader = TRUE
-
-                             #downloadButton('saveHTML', 'Save network as .html')
-             #                )),
 
 
                 fluidRow(
@@ -118,7 +133,9 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL', Cust=FALSE, CustObj
                       uiOutput('dt_UI'))
                 )),
         tabItem(tabName = "legend",
-                h2("legend")),
+                fluidPage(
+                  h2("Legend"),
+                  tags$img(src = 'https://i.ibb.co/ZGznD9Y/legend-shony.png', height="500"))),
         tabItem(tabName = "about",
                 h2("About"))
       )
@@ -131,41 +148,50 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL', Cust=FALSE, CustObj
 
   server <- function(input, output) {
 
-
-
     decs = unique(as.matrix(rules$DECISION))
     decs_f = c('all', decs )
+    lnodes <- data.frame(label = c("Under-Expressed", "No change","Over-Expressed"),
+                         shape = c( "dot", "dot", "dot"),
+                         color = list(background=c("#999999") ,border=c("#0072B2")),
+                         borderWidth = c(3),font.size = 18, size =c(25),
+                         id = 1:3)
+
+
     data <- eventReactive( input$run, {
       validate(
-        filter_rules(rules, input$accuracy, input$support, input$PrecSupport)
+        filter_rules(rules, input$accuracy, input$support)
       )
-      RulesFiltr =  filtration_rules(rules, input$accuracy, input$support, input$PrecSupport)
-      data_input=generate_object(decs, RulesFiltr,type, input$TopNodes, input$NodeColor, Cust, CustObject)
+      RulesFiltr =  filtration_rules(rules, input$accuracy, input$support)
+      #print(colnames(RulesFiltr))
+      data_input=generate_object(decs, RulesFiltr,type, input$TopNodes, input$NodeColor,  CustObjectNodes, CustObjectEdges)
       data_input[['Rules']] = rules
       return(data_input)
     })
 
     net <- reactive({
       data = data()
+      #head(data)
       decisionName = input$decisions
       nodes = data[[decisionName]]$nodes
       edges = data[[decisionName]]$edges
+
       validate(
         need(is.null(nodes) == FALSE, "No rules for the current decision. Change the settings")
       )
-
       graph = visNetwork::visNetwork(nodes, edges, main = paste('Decision: ', decisionName), height = "800px",
                                      width = "100%") %>%
         visLayout(randomSeed = 123) %>%
         visPhysics(enabled = TRUE) %>%
-        visInteraction(hover = TRUE) %>%
+        visInteraction(hover = TRUE, navigationButtons = TRUE) %>%
         visEdges(smooth = TRUE) %>%
+        visNodes(font = list(size='1500px'))%>%
+
+        #visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
         visEvents(select = "function(nodes) {
                   Shiny.onInputChange('current_node_id', nodes.nodes);
                   ;}")
-
       if( length(nodes$group) >0){
-        visNetwork::visOptions(graph = graph, selectedBy = list(variable = "group" ,  style = 'width: 200px; height: 30px;
+        visNetwork::visOptions(graph = graph, selectedBy = list(variable = "group" , multiple = TRUE, main = "Select by decision", style = 'width: 200px; height: 30px;
                                                                 padding-left: 80px;
                                                               font-size: 15px;
                                                                 color: black;
@@ -185,7 +211,7 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL', Cust=FALSE, CustObj
 
     observe({
       visNetworkProxy("network") %>%
-        visOptions(selectedBy = list(variable = "group", selected = input$Select))
+        visOptions(selectedBy = list(variable = "group", selected = input$Select) )
       # visRemoveNodes(id = input$Focus)
       # visFit(nodes = input$Focus)
     })
@@ -238,6 +264,9 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL', Cust=FALSE, CustObj
       data =  data()
       decisionName = input$decisions
       nodes = data[[decisionName]]$nodes
+      validate(
+        need(is.null(nodes) == FALSE, "")
+      )
       if(nrow(nodes[which(nodeInfo$selected == nodes$id),])!=0){
         dataTableOutput('table')
       } else{}
@@ -249,7 +278,10 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL', Cust=FALSE, CustObj
         paste('network-', Sys.Date(), '.html', sep='')
       },
       content = function(con) {
-        net() %>% visSave(con)
+        net() %>%
+         # visLegend(width = 0.2,addNodes = lnodes, useGroups = FALSE) %>%
+          visSave(con)
+
       }
     )
 

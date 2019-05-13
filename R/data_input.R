@@ -1,8 +1,30 @@
 data_input = function(data1, type){
   #R.Rosetta output
+  text_out = 'Incorrect data structure. Please check help.'
   if(type == 'RDF'){
+    validate(
+      need("SUPP_RHS" %in% colnames(data1), text_out),
+      need("ACC_RHS" %in% colnames(data1), text_out),
+      need("DECISION" %in% colnames(data1), text_out),
+      need("FEATURES" %in% colnames(data1), text_out),
+      need(is.numeric(data1$ACC_RHS), 'Accuracy is not numeric'),
+      need(is.numeric(data1$SUPP_RHS), 'Support is not numeric'),
+      RDF_columns_test(colnames(data1),text_out)
+    )
+    if("PVAL" %in% colnames(data1) == FALSE){ data1$PVAL = 0.05}
+    if(!isTRUE("DISC_CLASSES" %in% colnames(data1))){
+      data1$DISC_CLASSES = data1$CUTS_COND}
     df = data1
   }else if(type == 'L'){
+    validate(
+      need("SUPP_RHS" %in% colnames(data1), text_out),
+      need("ACC_RHS" %in% colnames(data1), text_out),
+      need("DECISION" %in% colnames(data1), text_out),
+      need("FEATURES" %in% colnames(data1), text_out),
+      need(is.numeric(data1$ACC_RHS), 'Accuracy is not numeric'),
+      need(is.numeric(data1$SUPP_RHS), 'Support is not numeric')
+    )
+    if("PVAL" %in% colnames(data1) == FALSE){ data1$PVAL = 0.05}
     df = data1
   }else if(type == 'RGUI'){
     rl = dataset_merged[-lapply(dataset_merged, function(x) grep('%', x))[[1]],]
