@@ -4,27 +4,42 @@
 \alias{visunet}
 \title{visunet}
 \usage{
-visunet(rules, type = "RDF", NodeColorType = "DL", Cust = FALSE,
-  CustObject)
+visunet(rules, type = "RDF", NodeColorType = "DL",
+  CustObjectNodes = list(), CustObjectEdges = list())
 }
 \arguments{
-\item{rules}{data frame or path to the rules file, depending on the values of the type parameter.\cr
-In the case of data frame, rule is the output of \code{\link[R.ROSETTA]{rosetta}}. The rules file
-is the output of \code{\link[R.ROSETTA]{rosetta}} saved using \code{\link[R.ROSETTA]{saveLineByLine}}
-or the output of the ROSETTA GUI version (see \url{http://bioinf.icm.uu.se/rosetta/}).}
+\item{rules}{data frame with rules information. Required at least four columns: "FEATURES",
+"ACC_RHS", "SUPP_RHS" and "DECISION" and each row corresponds to one rule.\cr
+See the output of \code{\link[R.ROSETTA]{rosetta}} for the information about the rules data frame structure.}
 
 \item{type}{character string specifying the type of the input data.  Three types implemented
-are "RDF" (the R.ROSETTA data frame), "L" ("Line by line" file format) and "RGUI" (ROSETTA GUI plan format). \cr
-The "Line by line" is the tab-separated file, each row corresponds to one rule. File contains 4 or 5 columns:
-condition list, decision, accuracy and support of the rule, the optional 5th column contains a fractional support value\cr
+are "RDF" - the R.ROSETTA output (see \code{\link[R.ROSETTA]{rosetta}}), "L" - "Line by line" file format (see \code{\link[R.ROSETTA]{saveLineByLine}})
 The default is "RDF".}
 
-\item{Cust}{logical flag: if TRUE the CustObject is customised Rule Network Object, otherwise the
-CustObject parameter is ignored.}
+\item{NodeColorType}{character string specifying the color of nodes.
+\itemize{
+  \item "DL" - feature discretization levels
+  \item "A" - feature distratization value
+}
+The default is "DL".}
 
-\item{CustObject}{customised Rule Network Object corresponding to the output of the visunet function,
-that can be modified according
-to the visualisation aim. See more in the details section.}
+\item{CustObjectNodes}{a list that contains customised VisuNet output for nodes. List need
+to contain two variables:
+\itemize{
+  \item nodes - customized VisuNet output for nodes
+  \item CustCol - names of variables added/changed in the VisuNet output for nodes.
+  See \code{\link[visNetwork]{visNodes}} for the full list of available variables.
+}
+Example use in the example section}
+
+\item{CustObjectEdges}{a list that contains customised VisuNet output for edges. List need
+to contain two variables:
+\itemize{
+  \item edges - customized VisuNet output for nodes
+  \item CustCol - names of variables added/changed in the VisuNet output for nodes.
+  See \code{\link[visNetwork]{visEdges}} for the full list of available variables.
+}
+Example use in the example section}
 }
 \value{
 Rule Network Object.
@@ -33,17 +48,37 @@ Rule Network Object.
 visunet
 }
 \examples{
-R.ROSETTA output
+
+#R.ROSETTA output
 out = rosetta(autcon)
 rules = out$main
 vis_out = visunet(rules)
 ------------
-Line by line file
-rules = (read.csv2('dataset_ethnicity_all_100set.txt', sep='\\t', header = FALSE, col.names = c('FEATURES', 'DECISION', 'ACC_RHS', 'SUPP_RHS'),stringsAsFactors=FALSE))
+#"Line by line" file format
+rules = (read.csv2('LbL.txt', sep='\\t', header = FALSE, col.names = c('FEATURES', 'DECISION', 'ACC_RHS', 'SUPP_RHS'),stringsAsFactors=FALSE))
 rules$ACC_RHS = as.numeric(rules$ACC_RHS)
 rules$SUPP_RHS = as.numeric(rules$SUPP_RHS)
 rules$PVAL = 0.05
 vis_out = visunet(rules, 'L')
 
+------------
+#customisation of the VisuNet output for nodes
+nodes_RNO <- vis_out$all$nodes
+#Changing the nodes shape to stars
+nodes_RNO$shape <- rep('star', length(nodes_RNO$label))
+# a customized nodes list
+nodesL <- list(nodes = nodes_RNO,CustCol =  c('shape'))
+Rerun VisuNet with a customized nodes list
+vis_out2 <- visunet(rules, CustObjectNodes = nodesL
+
+------------
+customisation of VisuNet output for edges
+Adding arrows to edges
+edges_RNO <- vis_out$all$edges
+edges_RNO$arrows <- rep('to', length(edges_RNO$label2))
+# a customized edges list
+edgesL <- list(edges = edges_RNO,CustCol =   c('arrows'))
+Rerun VisuNet with a customized edges list
+vis_out3 <- visunet(rules, CustObjectEdges = edgesL)
 }
 \keyword{misc}
