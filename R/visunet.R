@@ -162,7 +162,6 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL',  CustObjectNodes=li
         filter_rules(rules, input$accuracy, input$support)
       )
       RulesFiltr =  filtration_rules(rules, input$accuracy, input$support)
-      #print(colnames(RulesFiltr))
       data_input=generate_object(decs, RulesFiltr,type, input$TopNodes, input$NodeColor,  CustObjectNodes, CustObjectEdges)
       data_input[['Rules']] = rules
       return(data_input)
@@ -170,7 +169,6 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL',  CustObjectNodes=li
 
     net <- reactive({
       data = data()
-      #head(data)
       decisionName = input$decisions
       nodes = data[[decisionName]]$nodes
       edges = data[[decisionName]]$edges
@@ -185,8 +183,6 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL',  CustObjectNodes=li
         visInteraction(hover = TRUE, navigationButtons = TRUE) %>%
         visEdges(smooth = TRUE) %>%
         visNodes(font = list(size='1500px'))%>%
-
-        #visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
         visEvents(select = "function(nodes) {
                   Shiny.onInputChange('current_node_id', nodes.nodes);
                   ;}")
@@ -212,8 +208,6 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL',  CustObjectNodes=li
     observe({
       visNetworkProxy("network") %>%
         visOptions(selectedBy = list(variable = "group", selected = input$Select) )
-      # visRemoveNodes(id = input$Focus)
-      # visFit(nodes = input$Focus)
     })
 
    # observe({
@@ -279,7 +273,6 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL',  CustObjectNodes=li
       },
       content = function(con) {
         net() %>%
-         # visLegend(width = 0.2,addNodes = lnodes, useGroups = FALSE) %>%
           visSave(con)
 
       }

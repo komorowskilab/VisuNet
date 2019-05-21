@@ -10,7 +10,8 @@ visunet(rules, type = "RDF", NodeColorType = "DL",
 \arguments{
 \item{rules}{data frame with rules information. Required at least four columns: "FEATURES",
 "ACC_RHS", "SUPP_RHS" and "DECISION" and each row corresponds to one rule.\cr
-See the output of \code{\link[R.ROSETTA]{rosetta}} for the information about the rules data frame structure.}
+See the output of \code{\link[R.ROSETTA]{rosetta}} for the information about the rules data frame structure.
+#'}
 
 \item{type}{character string specifying the type of the input data.  Three types implemented
 are "RDF" - the R.ROSETTA output (see \code{\link[R.ROSETTA]{rosetta}}), "L" - "Line by line" file format (see \code{\link[R.ROSETTA]{saveLineByLine}})

@@ -47,7 +47,7 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
 
     #Set of rules per Node
     NodeRulesSet[[nod]] = viewRules(rules[node_id,])
-    DecisionSet = c(DecisionSet, paste0(names(sort(table(rules[node_id, "DECISION"]),decreasing=TRUE)), collapse=','))
+    DecisionSet = c(DecisionSet, paste0(names(sort(table(as.character(rules[node_id, "DECISION"])),decreasing=TRUE)), collapse=','))
   }
 
 
