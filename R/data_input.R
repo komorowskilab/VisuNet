@@ -57,9 +57,6 @@ data_input = function(data1, type){
 
     sup_max = lapply(support, which.max)
     s = unlist(sup_max)
-    #lapply(accuracy, function(x) x[s])
-
-
 
     accuracy_max = mapply(function(X,Y) {
       sapply(1, function(row) X[[Y]])

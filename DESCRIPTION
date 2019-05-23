@@ -1,8 +1,8 @@
 Package: VisuNet
-Title: Visualizing Networks of feature interaction in rules
+Title: An interactive tool for rule network visualization
 Version: 1.0.0
 Authors@R: person("Karolina", "Smolinska-Garbulowska", email = "karolina.smolinska@icm.uu.se", role = c("aut", "cre"))
-Description: Visualizing Networks of feature interaction in rules.
+Description: An interactive tool for rule network visualization from rule-based models
 Depends: R (>= 3.5.0),
     visNetwork,
     shiny,
