@@ -3,3 +3,5 @@ remote_theme: pmarsceill/just-the-docs
 aux_links:
     "VisuNet on GitHub":
       - "//github.com/komorowskilab/VisuNet"
+# Enable or disable the site search
+search_enabled: true
