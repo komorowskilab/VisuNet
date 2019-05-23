@@ -9,7 +9,12 @@ devtools::install_github("komorowskilab/VisuNet"")
 
 require(VisuNet)
 
-#Sample rule set for classifier of autisic and non-autiscic young males
+#Sample rule set for a classifier of autisic and non-autiscic young males
+#'Line by line' data type
 data(autcon_ruleset)
+
+#Run VisuNet
+#Remember to click DONE once you finished your work with the network
+vis_out = visunet(autcon_ruleset, type = 'L)
 
 ````
