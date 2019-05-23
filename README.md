@@ -22,10 +22,10 @@ vis_out = visunet(autcon_ruleset, type = 'L)
 
 #Nodes customization
 #Mark autism-related genes as stars
-
 aut_genes <- c('TSPOAP1', 'COX2','NCS1','RHPN1','FLRT2',
               'BAHD1','NCKAP5L','PPOX', 'NGR2',
               'ATXN8OS','DEPDC1')
+
 #Extract rule network object for nodes
 nodes_RNO <- vis_out$all$nodes
 
@@ -40,6 +40,6 @@ nodes_RNO$shape[which(as.character(nodes_RNO$label) %in% aut_genes)] <- 'star'
 #second variable CustCol: vector of modified/added variables
 nodesL <- list(nodes = nodes_RNO,CustCol =  c('shape'))
 
-Rrerun VisuNet with a new shape of nodes
+#Rerun VisuNet with a new shape of nodes
 vis_out2 <- visunet(rules, CustObjectNodes = nodesL)
 ````
