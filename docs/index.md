@@ -5,7 +5,7 @@ nav_order: 1
 description: "VisuNet: an interactive tool for rule network visualization in R"
 ---
 
-![](https://github.com/komorowskilab/VisuNet/blob/master/images/VisuNet_logo.png?raw=true =250x)
+![](https://github.com/komorowskilab/VisuNet/blob/master/images/VisuNet_logo.png?raw=true | width=100)
 
 
 ## An interactive tool for rule network visualization in R
@@ -15,5 +15,5 @@ description: "VisuNet: an interactive tool for rule network visualization in R"
 
 ---
 
-VisuNet is an interactive tool that supports analysis of complex-rule based classifiers and helps explain their structure. VisuNet can be successfully apply to any classification problems, such as, for instance, a complex health-related decsion tasks. Rule networks can clearly identify main genes and their expression levels predicting complex phenotypes, e.g. cancer, autism. 
+VisuNet is an interactive tool that supports analysis of complex-rule based classifiers and helps explain their structure. VisuNet can be successfully apply to any classification problems, such as, for instance, a complex health-related decsion tasks. Rule networks can clearly identify main genes (metabolites, methylation sites, etc) and their expression levels predicting complex phenotypes, e.g. cancer, autism. 
 VisuNet is implemented in R and uses the Shiny Gadgets attributes. The tool includes the rule network construction, filtration, visualization and customization.

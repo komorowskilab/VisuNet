@@ -1,5 +1,7 @@
 ---
 layout: default
-title: Introduction
+title: Overwiew
 nav_order: 2
 ---
+
+VisuNet uses the [VisNetwork](https://github.com/datastorm-open/visNetwork.git) package properties for constucting rule network
