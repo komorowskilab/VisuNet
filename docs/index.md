@@ -4,9 +4,9 @@ title: Home
 nav_order: 1
 description: "VisuNet: an interactive tool for rule network visualization in R"
 ---
-<div style="width:300px; height:200px">
+
 ![](https://github.com/komorowskilab/VisuNet/blob/master/images/VisuNet_logo.png?raw=true)
-</div>
+
 
 ## An interactive tool for rule network visualization in R
 
