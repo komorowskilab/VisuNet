@@ -5,7 +5,7 @@ nav_order: 1
 description: "VisuNet: an interactive tool for rule network visualization in R"
 ---
 
-![](https://github.com/komorowskilab/VisuNet/blob/master/images/VisuNet_logo.png?raw=true)
+![](https://github.com/komorowskilab/VisuNet/blob/master/images/VisuNet_logo.png?raw=true =250x)
 
 
 ## An interactive tool for rule network visualization in R
