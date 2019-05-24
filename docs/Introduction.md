@@ -8,6 +8,8 @@ VisuNet uses the [VisNetwork](https://github.com/datastorm-open/visNetwork.git) 
 
 
 ##Installation
+
+
 ```{r}
 devtools::install_github("komorowskilab/VisuNet")
 ```
