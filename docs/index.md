@@ -5,11 +5,11 @@ nav_order: 1
 description: "VisuNet: an interactive tool for rule network visualization in R"
 ---
 
-![](https://guides.github.com/activities/hello-world/branching.png)
+![](https://github.com/komorowskilab/VisuNet/blob/master/images/VisuNet_logo.png?raw=true)
 
 
 
-## VisuNet: an interactive tool for rule network visualization in R
+## An interactive tool for rule network visualization in R
 
 
 [View it on GitHub](https://github.com/komorowskilab/VisuNet){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2}
