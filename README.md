@@ -15,7 +15,7 @@ data(autcon_ruleset)
 
 #Run VisuNet
 #Remember to click DONE once you finished your work with the network
-vis_out = visunet(autcon_ruleset, type = 'L)
+vis_out = visunet(autcon_ruleset, type = 'L')
 
 #############################
 #Rule network object customization
