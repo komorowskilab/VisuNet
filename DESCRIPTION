@@ -1,6 +1,6 @@
 Package: VisuNet
 Title: An interactive tool for rule network visualization
-Version: 1.0.0
+Version: 1.1.0
 Authors@R: person("Karolina", "Smolinska-Garbulowska", email = "karolina.smolinska@icm.uu.se", role = c("aut", "cre"))
 Description: An interactive tool for rule network visualization from rule-based models
 Depends: R (>= 3.5.0),
@@ -8,7 +8,7 @@ Depends: R (>= 3.5.0),
     shiny,
     shinydashboard,
     shinythemes,
-    R.ROSETTA
+    R.ROSETTA (>= 2.0.0),
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
