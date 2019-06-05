@@ -5,7 +5,7 @@ VisuNet is implemented as an R package and using Shiny Gadget properties for rul
 ## Example
 
 ```` 
-devtools::install_github("komorowskilab/VisuNet"")
+devtools::install_github("komorowskilab/VisuNet")
 
 require(VisuNet)
 
