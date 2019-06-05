@@ -27,6 +27,7 @@ data_input = function(data1, type){
     if("pValue" %in% colnames(data1) == FALSE){ data1$pValue = 0.05}
     df = data1
   }else if(type == 'RGUI'){
+    dataset_merged = data1
     rl = dataset_merged[-lapply(dataset_merged, function(x) grep('%', x))[[1]],]
     j = 0
     all_rules=NULL
