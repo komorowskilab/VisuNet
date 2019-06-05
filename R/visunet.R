@@ -8,8 +8,8 @@
 
 #' visunet
 #' @import visNetwork shiny shinythemes R.ROSETTA
-#' @param rules data frame with rules information. Required at least four columns: "FEATURES",
-#' "ACC_RHS", "SUPP_RHS" and "DECISION" and each row corresponds to one rule.\cr
+#' @param rules data frame with rules information. Required at least four columns: "features",
+#' "accuracyRHS", "supportRHS" and "decision" and each row corresponds to one rule.\cr
 #' See the output of \code{\link[R.ROSETTA]{rosetta}} for the information about the rules data frame structure.
 #'#'
 #' @param type  character string specifying the type of the input data.  Three types implemented
@@ -52,10 +52,10 @@
 #' vis_out = visunet(rules)
 #'------------
 #' #"Line by line" file format
-#' rules = (read.csv2('LbL.txt', sep='\t', header = FALSE, col.names = c('FEATURES', 'DECISION', 'ACC_RHS', 'SUPP_RHS'),stringsAsFactors=FALSE))
-#' rules$ACC_RHS = as.numeric(rules$ACC_RHS)
-#' rules$SUPP_RHS = as.numeric(rules$SUPP_RHS)
-#' rules$PVAL = 0.05
+#' rules = (read.csv2('LbL.txt', sep='\t', header = FALSE, col.names = c('features', 'decision', 'accuracyRHS', 'supportRHS'),stringsAsFactors=FALSE))
+#' rules$accuracyRHS = as.numeric(rules$accuracyRHS)
+#' rules$supportRHS = as.numeric(rules$supportRHS)
+#' rules$pValue = 0.05
 #' vis_out = visunet(rules, 'L')
 #'
 #'------------
@@ -66,7 +66,7 @@
 #'# a customized nodes list
 #'nodesL <- list(nodes = nodes_RNO,CustCol =  c('shape'))
 #'Rerun VisuNet with a customized nodes list
-#'vis_out2 <- visunet(rules, CustObjectNodes = nodesL
+#'vis_out2 <- visunet(rules, CustObjectNodes = nodesL)
 #'
 #'------------
 #'customisation of VisuNet output for edges
@@ -148,7 +148,7 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL',  CustObjectNodes=li
 
   server <- function(input, output) {
 
-    decs = unique(as.matrix(rules$DECISION))
+    decs = unique(as.matrix(rules$decision))
     decs_f = c('all', decs )
     lnodes <- data.frame(label = c("Under-Expressed", "No change","Over-Expressed"),
                          shape = c( "dot", "dot", "dot"),
@@ -163,7 +163,6 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL',  CustObjectNodes=li
       )
       RulesFiltr =  filtration_rules(rules, input$accuracy, input$support)
       data_input=generate_object(decs, RulesFiltr,type, input$TopNodes, input$NodeColor,  CustObjectNodes, CustObjectEdges)
-      data_input[['Rules']] = rules
       return(data_input)
     })
 
@@ -228,7 +227,7 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL',  CustObjectNodes=li
 
     output$support <- renderUI({
       sliderInput("support", ("Min Support"),
-                  min = 0, max = max(rules$SUPP_RHS), value = minSupp, step = 1)
+                  min = 0, max = max(rules$supportRHS), value = minSupp, step = 1)
     })
 
     output$NodeColor <- renderUI({

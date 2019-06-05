@@ -1,18 +1,18 @@
 generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  NewDataNodes, NewDataEdges){
   if(type == 'RDF'){
-    vec = as.character(as.matrix(rules["FEATURES"]))
+    vec = as.character(as.matrix(rules["features"]))
     lst1 = sapply(vec, function(x) strsplit(x, ",", fixed = TRUE))
-    vec2 = as.character(as.matrix(rules["DISC_CLASSES"]))
+    vec2 = as.character(as.matrix(rules["levels"]))
     lst2 = sapply(vec2, function(x) strsplit(x, ",", fixed = TRUE))
     newLst = mapply(paste, collapse = ",", sep = "=", lst1,
                     lst2)
     NodeID = as.character(unname(newLst))
     rules$id=NodeID
   }else{
-    rules$id = as.matrix(rules$FEATURES)
+    rules$id = as.matrix(rules$features)
   }
   # Rule connection value
-  rules$CONNECTION = rules$SUPP_RHS * rules$ACC_RHS
+  rules$CONNECTION = rules$supportRHS * rules$accuracyRHS
   #Node information
   Nodes_vec=sapply(rules$id, function(x) strsplit(x, ","))
   NodeUniq=unique(unlist(Nodes_vec))
@@ -33,11 +33,11 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
     #discrete state
     NodeState = c(NodeState,strsplit(nod, '=')[[1]][2])
     #mean accuracy
-    meanAcc = c(meanAcc,mean(rules[node_id,"ACC_RHS"]))
+    meanAcc = c(meanAcc,mean(rules[node_id,"accuracyRHS"]))
     #mean support
-    meanSupp = c(meanSupp, mean(rules[node_id,"SUPP_RHS"]))
+    meanSupp = c(meanSupp, mean(rules[node_id,"supportRHS"]))
     #mean % support
-    if("PERC_SUPP_RHS" %in% colnames(rules[node_id,])) meanPrecSupp = c(meanPrecSupp, mean(rules[node_id,"PERC_SUPP_RHS"])) else meanPrecSupp = c(meanPrecSupp, NA)
+    if("PERC_supportRHS" %in% colnames(rules[node_id,])) meanPrecSupp = c(meanPrecSupp, mean(rules[node_id,"PERC_supportRHS"])) else meanPrecSupp = c(meanPrecSupp, NA)
     # number of rules
     NRules = c(NRules, dim(rules[node_id,])[1])
     # % from rules in decision
@@ -47,7 +47,7 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
 
     #Set of rules per Node
     NodeRulesSet[[nod]] = viewRules(rules[node_id,])
-    DecisionSet = c(DecisionSet, paste0(names(sort(table(as.character(rules[node_id, "DECISION"])),decreasing=TRUE)), collapse=','))
+    DecisionSet = c(DecisionSet, paste0(names(sort(table(as.character(rules[node_id, "decision"])),decreasing=TRUE)), collapse=','))
   }
 
 
@@ -233,6 +233,6 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
   }
 
 
-  Net = list(nodes = NodeInfoDF, edges = EdgesInfo, NodeRulesSetPerNode = NodeRulesSet)
+  Net = list(nodes = NodeInfoDF, edges = EdgesInfo, RulesSetPerNode = NodeRulesSet)
   return(Net)
 }

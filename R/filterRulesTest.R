@@ -1,7 +1,7 @@
 filterRulesTest = function(RNobj, minAcc, minSupp, PercSupp){
   #print('validation')
   #print(minAcc)
-  #max(rules$ACC_RHS)
+  #max(rules$accuracyRHS)
   # print(rules)
   if(length(RNobj$meanPERC_SUPP ) > 0){
    # print(RNobj$meanPERC_SUPP)

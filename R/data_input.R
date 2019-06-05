@@ -3,28 +3,28 @@ data_input = function(data1, type){
   text_out = 'Incorrect data structure. Please check help.'
   if(type == 'RDF'){
     validate(
-      need("SUPP_RHS" %in% colnames(data1), text_out),
-      need("ACC_RHS" %in% colnames(data1), text_out),
-      need("DECISION" %in% colnames(data1), text_out),
-      need("FEATURES" %in% colnames(data1), text_out),
-      need(is.numeric(data1$ACC_RHS), 'Accuracy is not numeric'),
-      need(is.numeric(data1$SUPP_RHS), 'Support is not numeric'),
+      need("supportRHS" %in% colnames(data1), text_out),
+      need("accuracyRHS" %in% colnames(data1), text_out),
+      need("decision" %in% colnames(data1), text_out),
+      need("features" %in% colnames(data1), text_out),
+      need(is.numeric(data1$accuracyRHS), 'Accuracy is not numeric'),
+      need(is.numeric(data1$supportRHS), 'Support is not numeric'),
       RDF_columns_test(colnames(data1),text_out)
     )
-    if("PVAL" %in% colnames(data1) == FALSE){ data1$PVAL = 0.05}
-    if(!isTRUE("DISC_CLASSES" %in% colnames(data1))){
-      data1$DISC_CLASSES = data1$CUTS_COND}
+    if("pValue" %in% colnames(data1) == FALSE){ data1$pValue = 0.05}
+    if(!isTRUE("levels" %in% colnames(data1))){
+      data1$levels = data1$CUTS_COND}
     df = data1
   }else if(type == 'L'){
     validate(
-      need("SUPP_RHS" %in% colnames(data1), text_out),
-      need("ACC_RHS" %in% colnames(data1), text_out),
-      need("DECISION" %in% colnames(data1), text_out),
-      need("FEATURES" %in% colnames(data1), text_out),
-      need(is.numeric(data1$ACC_RHS), 'Accuracy is not numeric'),
-      need(is.numeric(data1$SUPP_RHS), 'Support is not numeric')
+      need("supportRHS" %in% colnames(data1), text_out),
+      need("accuracyRHS" %in% colnames(data1), text_out),
+      need("decision" %in% colnames(data1), text_out),
+      need("features" %in% colnames(data1), text_out),
+      need(is.numeric(data1$accuracyRHS), 'Accuracy is not numeric'),
+      need(is.numeric(data1$supportRHS), 'Support is not numeric')
     )
-    if("PVAL" %in% colnames(data1) == FALSE){ data1$PVAL = 0.05}
+    if("pValue" %in% colnames(data1) == FALSE){ data1$pValue = 0.05}
     df = data1
   }else if(type == 'RGUI'){
     rl = dataset_merged[-lapply(dataset_merged, function(x) grep('%', x))[[1]],]
@@ -71,10 +71,10 @@ data_input = function(data1, type){
     }, X=support, Y=sup_max)
 
     rules2 = as.data.frame(cbind(unlist(condition), decision_max, as.character(accuracy_max), as.character(support_max)))
-    colnames(rules2) = c('FEATURES', 'DECISION', 'ACC_RHS', 'SUPP_RHS')
-    rules2$ACC_RHS = as.numeric(as.character(rules2$ACC_RHS))
-    rules2$SUPP_RHS = as.numeric(as.character(rules2$SUPP_RHS))
-    rules2$PVAL = 0.05
+    colnames(rules2) = c('features', 'decision', 'accuracyRHS', 'supportRHS')
+    rules2$accuracyRHS = as.numeric(as.character(rules2$accuracyRHS))
+    rules2$supportRHS = as.numeric(as.character(rules2$supportRHS))
+    rules2$pValue = 0.05
     df = rules2
   }else{
     print('Invalid data type!')

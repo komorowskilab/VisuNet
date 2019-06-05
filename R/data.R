@@ -7,11 +7,11 @@
 #'
 #' @format A data frame with 191 rows and 5 variables. Each row corresponds to one rule:
 #' \describe{
-#'   \item{FEATURES}{comma-separated conditions (feature=value)}
-#'   \item{DECISION}{a rule decision}
-#'   \item{ACC_RHS}{a rule accuracy value}
-#'   \item{SUPP_RHS}{a rule support value}
-#'   \item{PVAL}{a rule p-value value}
+#'   \item{features}{comma-separated conditions (feature=value)}
+#'   \item{decision}{a rule decision}
+#'   \item{accuracyRHS}{a rule accuracy value}
+#'   \item{supportRHS}{a rule support value}
+#'   \item{pValue}{a rule p-value value}
 #'}
 #' @docType data
 #'
