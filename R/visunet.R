@@ -168,6 +168,7 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL',  CustObjectNodes=li
 
     net <- reactive({
       data = data()
+
       decisionName = input$decisions
       nodes = data[[decisionName]]$nodes
       edges = data[[decisionName]]$edges
