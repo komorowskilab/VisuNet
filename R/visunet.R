@@ -75,7 +75,7 @@
 #'edges_RNO$arrows <- rep('to', length(edges_RNO$label2))
 #'# a customized edges list
 #'edgesL <- list(edges = edges_RNO,CustCol =   c('arrows'))
-#'Rerun VisuNet with a customized edges list
+#'# Rerun VisuNet with a customized edges list
 #'vis_out3 <- visunet(rules, CustObjectEdges = edgesL)
 
 
@@ -102,8 +102,7 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL',  CustObjectNodes=li
         actionButton("run", "Run"),
         downloadButton('saveHTML', 'Save network as .html'),
         menuItem("Network", icon = icon("project-diagram"), tabName = "network") ,
-        menuItem("Legend", icon = icon("sliders"), tabName = "legend")#,
-        #menuItem("About", icon = icon("user-astronaut"), tabName = "about")
+        menuItem("Legend", icon = icon("sliders"), tabName = "legend")
       )
     ),
     body <- dashboardBody(

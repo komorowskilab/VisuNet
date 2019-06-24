@@ -69,7 +69,7 @@ nodes_RNO <- vis_out$all$nodes
 nodes_RNO$shape <- rep('star', length(nodes_RNO$label))
 # a customized nodes list
 nodesL <- list(nodes = nodes_RNO,CustCol =  c('shape'))
-Rerun VisuNet with a customized nodes list
+# Rerun VisuNet with a customized nodes list
 vis_out2 <- visunet(rules, CustObjectNodes = nodesL)
 
 ------------
@@ -79,7 +79,7 @@ edges_RNO <- vis_out$all$edges
 edges_RNO$arrows <- rep('to', length(edges_RNO$label2))
 # a customized edges list
 edgesL <- list(edges = edges_RNO,CustCol =   c('arrows'))
-Rerun VisuNet with a customized edges list
+# Rerun VisuNet with a customized edges list
 vis_out3 <- visunet(rules, CustObjectEdges = edgesL)
 }
 \keyword{misc}
