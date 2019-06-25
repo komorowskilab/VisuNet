@@ -8,6 +8,7 @@ Depends: R (>= 3.5.0),
     shiny,
     shinydashboard,
     shinythemes,
+    dashboardthemes,
     R.ROSETTA (>= 2.0.0),
 License: GPL (>= 2)
 Encoding: UTF-8
@@ -17,11 +18,13 @@ Imports:
     shiny,
     shinydashboard,
     shinythemes,
+    dashboardthemes,
     R.ROSETTA
 Remotes: 
     datastorm-open/visNetwork,
     rstudio/shinydashboard,
-    mategarb/R.ROSETTA
+    mategarb/R.ROSETTA,
+    nik01010/dashboardthemes
 RoxygenNote: 6.1.1
 Suggests: 
     knitr,

@@ -71,12 +71,9 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
     # #color according to the accuracy value
     #matrix of colors
     breaks=seq(0.7, 1, by=0.001)
-    colFunc60_100 = colorRampPalette(c("#EDBF9A", "#D55E00"))
     colFunc60_100 = colorRampPalette(c("#F1CDB0", "#D55E00"))
     colVec = colFunc60_100(length(breaks))
     breaks2 = seq(0,0.69,by=0.001)
-    #colFunc0_60 = colorRampPalette(c("#F5DBC6", "#EDBF9A"))
-    #colFunc0_60 = colorRampPalette(c("white", "#EDBF9A"))
     colFunc0_60 = colorRampPalette(c("white", "#F1CDB0"))
     colVec2 = colFunc0_60(length(breaks2))
     ColorMat = cbind(as.numeric(c(breaks2, breaks)),c(colVec2, colVec))

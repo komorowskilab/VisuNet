@@ -89,6 +89,7 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL',  CustObjectNodes=li
 
   ui <- dashboardPage(
     header <- dashboardHeader(title = "VisuNet", tags$li(class = "dropdown", actionButton("done", "Done"))),
+
     sidebar <- dashboardSidebar(
       sidebarMenu(
         uiOutput("decisions"),
@@ -149,12 +150,6 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL',  CustObjectNodes=li
 
     decs = unique(as.matrix(rules$decision))
     decs_f = c('all', decs )
-    lnodes <- data.frame(label = c("Under-Expressed", "No change","Over-Expressed"),
-                         shape = c( "dot", "dot", "dot"),
-                         color = list(background=c("#999999") ,border=c("#0072B2")),
-                         borderWidth = c(3),font.size = 18, size =c(25),
-                         id = 1:3)
-
 
     data <- eventReactive( input$run, {
       validate(
@@ -243,14 +238,14 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL',  CustObjectNodes=li
     nodeInfo <- reactiveValues(selected = '')
 
     observeEvent(input$current_node_id, {
-      nodeInfo$selected <<- input$current_node_id
+      nodeInfo$selected <- input$current_node_id
     })
 
     output$table <- renderDataTable({
       data =  data()
       decisionName = input$decisions
       nodes = data[[decisionName]]$nodes
-      data[[decisionName]]$NodeRulesSetPerNode[[nodeInfo$selected]]
+      data[[decisionName]]$ RulesSetPerNode[[nodeInfo$selected]]
     })
 
     output$dt_UI <- renderUI({
