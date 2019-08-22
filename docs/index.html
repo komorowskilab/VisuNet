@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>VisuNet: an interactive tool for network visualization of rule-based models in R</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<link href="site_libs/vis-4.20.1/vis.css" rel="stylesheet" />
+<script src="site_libs/vis-4.20.1/vis.min.js"></script>
+<script src="site_libs/visNetwork-binding-2.0.7/visNetwork.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">VisuNet</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">About</a>
+</li>
+<li>
+  <a href="about.html">Tutorials</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/komorowskilab/VisuNet.git">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">VisuNet: an interactive tool for network visualization of rule-based models in R</h1>
+
+</div>
+
+
+<center>
+<img src="images/VIsuNet_logo2.png" style="width:30.0%" />
+</center>
+<hr />
+<p>VisuNet is an interactive tool for structural analysis of complex rule-based classifiers. VisuNet can be applied to any classification problem and is commonly used with complex health-related decision tasks. The rule networks produced can clearly identify driving genes (metabolites, methylation sites, etc) and their expression levels. VisuNet is implemented in R and uses the <a href="https://shiny.rstudio.com/articles/gadgets.html">Shiny Gadgets</a> attributes. The tool includes construction, filtration, visualization and customization of networks from rule-based models. VisuNet is available on <a href="https://github.com/komorowskilab/VisuNet.git">GitHub</a>.</p>
+<hr />
+<div id="rule-network-construction" class="section level1">
+<h1>Rule network construction</h1>
+<p>A rule network is constructed from sets of IF-THEN rules. In the network, nodes are conjuncts of rules, ie. features, and edges connect nodes with corresponding conjuncts in rules.</p>
+<center>
+<a href="images/Rule-network_contruction2.png"><img src="images/Rule-network_contruction2.png" /></a> The rule network resulting from a rule.
+</center>
+<hr />
+</div>
+<div id="installation" class="section level1">
+<h1>Installation</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;komorowskilab/VisuNet&quot;</span>)</span></code></pre></div>
+<hr />
+</div>
+<div id="example" class="section level1">
+<h1>Example</h1>
+<p>This example uses gene expression data for autistic and non-autistic young males (<span class="citation">Alter et al. (<a href="#ref-RN1" role="doc-biblioref">2011</a>)</span>). The rule-based classifier was created using <a href="https://github.com/komorowskilab/R.ROSETTA.git">R.ROSETTA</a> <span class="citation">(see Garbulowski et al. <a href="#ref-RN2" role="doc-biblioref">2019</a>)</span>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">require</span>(VisuNet)</span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="co">#Sample rule set for a classifier of autistic and non-autistic young males</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co">#&#39;Line by line&#39; data type</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="kw">data</span>(autcon_ruleset)</span>
+<span id="cb2-6"><a href="#cb2-6"></a></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="co">#Run VisuNet</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="co">#Remember to click DONE once you finish working on VisuNet</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a>vis_out &lt;-<span class="st"> </span><span class="kw">visunet</span>(autcon_ruleset, <span class="dt">type =</span> <span class="st">&#39;L&#39;</span>)</span></code></pre></div>
+<div class="figure">
+<div id="htmlwidget-ecbcce2f08f788916aaf" style="width:100%;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ecbcce2f08f788916aaf">{"x":{"nodes":{"id":["PSMG4=3","COX2=3","MAP7=2","RHPN1=3","SCIN=2","TMLHE-AS1=1","PPOX=1","NCS1=2","TSPOAP1=3","MAP7=3","ZSCAN18=3","NCKAP5L=1","ZFP36L2=1","TCP11L1=1","234817_at=1","NPR2=3","NPR2=2","ZSCAN18=1","CSTB=1","MIR646HG=2","B3GNT7=3","CAPS2=3","NPR2=1","NCS1=1","C1QTNF7=2","MSI2=2","CWF19L2=2","MSI2=3","ATXN8OS=1","BAHD1=3","CLDN17=2","RHPN1=1","PPOX=2","NCKAP5L=2","C11orf95=1","COX2=1","NCKAP5L=3"],"label":["PSMG4","COX2","MAP7","RHPN1","SCIN","TMLHE-AS1","PPOX","NCS1","TSPOAP1","MAP7","ZSCAN18","NCKAP5L","ZFP36L2","TCP11L1","234817_at","NPR2","NPR2","ZSCAN18","CSTB","MIR646HG","B3GNT7","CAPS2","NPR2","NCS1","C1QTNF7","MSI2","CWF19L2","MSI2","ATXN8OS","BAHD1","CLDN17","RHPN1","PPOX","NCKAP5L","C11orf95","COX2","NCKAP5L"],"DiscState":["3","3","2","3","2","1","1","2","3","3","3","1","1","1","1","3","2","1","1","2","3","3","1","1","2","2","2","3","1","3","2","1","2","2","1","1","3"],"color.background":["#E69F00","#E69F00","#999999","#E69F00","#999999","#56B4E9","#56B4E9","#999999","#E69F00","#E69F00","#E69F00","#56B4E9","#56B4E9","#56B4E9","#56B4E9","#E69F00","#999999","#56B4E9","#56B4E9","#999999","#E69F00","#E69F00","#56B4E9","#56B4E9","#999999","#999999","#999999","#E69F00","#56B4E9","#E69F00","#999999","#56B4E9","#999999","#999999","#56B4E9","#56B4E9","#E69F00"],"value":[18.875,21,18.7142857142857,21,18.2857142857143,18.2,19.2,19,19,19.5,18.75,19.25,18,18,18.75,18,18.25,18,18,17.6666666666667,17.5,17.5,17,20,19,19,19,19,18,18,18,18,17,17,18,17,17],"borderWidth":[2.66666666666667,2.66666666666667,2.33333333333333,2.66666666666667,2.33333333333333,1.66666666666667,1.66666666666667,1.33333333333333,1.33333333333333,1.33333333333333,1.33333333333333,1.33333333333333,1.33333333333333,1.33333333333333,1.33333333333333,1.33333333333333,1.33333333333333,1.33333333333333,1,1,0.666666666666667,0.666666666666667,0.666666666666667,0.333333333333333,0.333333333333333,0.333333333333333,0.333333333333333,0.333333333333333,0.333333333333333,0.333333333333333,0.333333333333333,0.333333333333333,0.333333333333333,0.333333333333333,0.333333333333333,0.333333333333333,0.333333333333333],"color.border":["#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2","#0072B2"],"meanAcc":[0.9873725,0.985465,0.989437142857143,0.9662025,0.99098,1,0.941504,0.99342,0.988095,0.9547475,0.988095,0.958125,1,1,0.955395,0.98664,0.9705075,0.9499925,1,1,1,0.98611,0.97222,0.95238,1,1,1,0.95,1,1,0.97222,0.94737,1,1,0.92164,0.94444,0.94444],"meanSupp":[18.875,21,18.7142857142857,21,18.2857142857143,18.2,19.2,19,19,19.5,18.75,19.25,18,18,18.75,18,18.25,18,18,17.6666666666667,17.5,17.5,17,20,19,19,19,19,18,18,18,18,17,17,18,17,17],"NRules":[8,8,7,8,7,5,5,4,4,4,4,4,4,4,4,4,4,4,3,3,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"PrecRules":[0.133333333333333,0.133333333333333,0.116666666666667,0.133333333333333,0.116666666666667,0.0833333333333333,0.0833333333333333,0.0666666666666667,0.0666666666666667,0.0666666666666667,0.0666666666666667,0.0666666666666667,0.0666666666666667,0.0666666666666667,0.0666666666666667,0.0666666666666667,0.0666666666666667,0.0666666666666667,0.05,0.05,0.0333333333333333,0.0333333333333333,0.0333333333333333,0.0166666666666667,0.0166666666666667,0.0166666666666667,0.0166666666666667,0.0166666666666667,0.0166666666666667,0.0166666666666667,0.0166666666666667,0.0166666666666667,0.0166666666666667,0.0166666666666667,0.0166666666666667,0.0166666666666667,0.0166666666666667],"NodeConnection":[149.10082,130,129.57384,126.987,126.91146,91,90.3583,75.52624,75.0476,74.3798,74.0476,73.75264,72,72,71.65092,71.03808,70.82207,68.44023,54,53,35,34.49996,33.05548,19.0476,19,19,19,18.05,18,18,17.49996,17.05266,17,17,16.58952,16.05548,16.05548],"title":["Name: <b>PSMG4=3<\/b><br/>Edges: <b>8<\/b><br/>Connection: <b>149.1<\/b><br/>Mean accuracy: <b>0.99<\/b><br/>Mean support: <b>18.88","Name: <b>COX2=3<\/b><br/>Edges: <b>8<\/b><br/>Connection: <b>130<\/b><br/>Mean accuracy: <b>0.99<\/b><br/>Mean support: <b>21","Name: <b>MAP7=2<\/b><br/>Edges: <b>7<\/b><br/>Connection: <b>129.57<\/b><br/>Mean accuracy: <b>0.99<\/b><br/>Mean support: <b>18.71","Name: <b>RHPN1=3<\/b><br/>Edges: <b>8<\/b><br/>Connection: <b>126.99<\/b><br/>Mean accuracy: <b>0.97<\/b><br/>Mean support: <b>21","Name: <b>SCIN=2<\/b><br/>Edges: <b>7<\/b><br/>Connection: <b>126.91<\/b><br/>Mean accuracy: <b>0.99<\/b><br/>Mean support: <b>18.29","Name: <b>TMLHE-AS1=1<\/b><br/>Edges: <b>5<\/b><br/>Connection: <b>91<\/b><br/>Mean accuracy: <b>1<\/b><br/>Mean support: <b>18.2","Name: <b>PPOX=1<\/b><br/>Edges: <b>5<\/b><br/>Connection: <b>90.36<\/b><br/>Mean accuracy: <b>0.94<\/b><br/>Mean support: <b>19.2","Name: <b>NCS1=2<\/b><br/>Edges: <b>4<\/b><br/>Connection: <b>75.53<\/b><br/>Mean accuracy: <b>0.99<\/b><br/>Mean support: <b>19","Name: <b>TSPOAP1=3<\/b><br/>Edges: <b>4<\/b><br/>Connection: <b>75.05<\/b><br/>Mean accuracy: <b>0.99<\/b><br/>Mean support: <b>19","Name: <b>MAP7=3<\/b><br/>Edges: <b>4<\/b><br/>Connection: <b>74.38<\/b><br/>Mean accuracy: <b>0.95<\/b><br/>Mean support: <b>19.5","Name: <b>ZSCAN18=3<\/b><br/>Edges: <b>4<\/b><br/>Connection: <b>74.05<\/b><br/>Mean accuracy: <b>0.99<\/b><br/>Mean support: <b>18.75","Name: <b>NCKAP5L=1<\/b><br/>Edges: <b>4<\/b><br/>Connection: <b>73.75<\/b><br/>Mean accuracy: <b>0.96<\/b><br/>Mean support: <b>19.25","Name: <b>ZFP36L2=1<\/b><br/>Edges: <b>4<\/b><br/>Connection: <b>72<\/b><br/>Mean accuracy: <b>1<\/b><br/>Mean support: <b>18","Name: <b>TCP11L1=1<\/b><br/>Edges: <b>4<\/b><br/>Connection: <b>72<\/b><br/>Mean accuracy: <b>1<\/b><br/>Mean support: <b>18","Name: <b>234817_at=1<\/b><br/>Edges: <b>4<\/b><br/>Connection: <b>71.65<\/b><br/>Mean accuracy: <b>0.96<\/b><br/>Mean support: <b>18.75","Name: <b>NPR2=3<\/b><br/>Edges: <b>4<\/b><br/>Connection: <b>71.04<\/b><br/>Mean accuracy: <b>0.99<\/b><br/>Mean support: <b>18","Name: <b>NPR2=2<\/b><br/>Edges: <b>4<\/b><br/>Connection: <b>70.82<\/b><br/>Mean accuracy: <b>0.97<\/b><br/>Mean support: <b>18.25","Name: <b>ZSCAN18=1<\/b><br/>Edges: <b>4<\/b><br/>Connection: <b>68.44<\/b><br/>Mean accuracy: <b>0.95<\/b><br/>Mean support: <b>18","Name: <b>CSTB=1<\/b><br/>Edges: <b>3<\/b><br/>Connection: <b>54<\/b><br/>Mean accuracy: <b>1<\/b><br/>Mean support: <b>18","Name: <b>MIR646HG=2<\/b><br/>Edges: <b>3<\/b><br/>Connection: <b>53<\/b><br/>Mean accuracy: <b>1<\/b><br/>Mean support: <b>17.67","Name: <b>B3GNT7=3<\/b><br/>Edges: <b>2<\/b><br/>Connection: <b>35<\/b><br/>Mean accuracy: <b>1<\/b><br/>Mean support: <b>17.5","Name: <b>CAPS2=3<\/b><br/>Edges: <b>2<\/b><br/>Connection: <b>34.5<\/b><br/>Mean accuracy: <b>0.99<\/b><br/>Mean support: <b>17.5","Name: <b>NPR2=1<\/b><br/>Edges: <b>2<\/b><br/>Connection: <b>33.06<\/b><br/>Mean accuracy: <b>0.97<\/b><br/>Mean support: <b>17","Name: <b>NCS1=1<\/b><br/>Edges: <b>1<\/b><br/>Connection: <b>19.05<\/b><br/>Mean accuracy: <b>0.95<\/b><br/>Mean support: <b>20","Name: <b>C1QTNF7=2<\/b><br/>Edges: <b>1<\/b><br/>Connection: <b>19<\/b><br/>Mean accuracy: <b>1<\/b><br/>Mean support: <b>19","Name: <b>MSI2=2<\/b><br/>Edges: <b>1<\/b><br/>Connection: <b>19<\/b><br/>Mean accuracy: <b>1<\/b><br/>Mean support: <b>19","Name: <b>CWF19L2=2<\/b><br/>Edges: <b>1<\/b><br/>Connection: <b>19<\/b><br/>Mean accuracy: <b>1<\/b><br/>Mean support: <b>19","Name: <b>MSI2=3<\/b><br/>Edges: <b>1<\/b><br/>Connection: <b>18.05<\/b><br/>Mean accuracy: <b>0.95<\/b><br/>Mean support: <b>19","Name: <b>ATXN8OS=1<\/b><br/>Edges: <b>1<\/b><br/>Connection: <b>18<\/b><br/>Mean accuracy: <b>1<\/b><br/>Mean support: <b>18","Name: <b>BAHD1=3<\/b><br/>Edges: <b>1<\/b><br/>Connection: <b>18<\/b><br/>Mean accuracy: <b>1<\/b><br/>Mean support: <b>18","Name: <b>CLDN17=2<\/b><br/>Edges: <b>1<\/b><br/>Connection: <b>17.5<\/b><br/>Mean accuracy: <b>0.97<\/b><br/>Mean support: <b>18","Name: <b>RHPN1=1<\/b><br/>Edges: <b>1<\/b><br/>Connection: <b>17.05<\/b><br/>Mean accuracy: <b>0.95<\/b><br/>Mean support: <b>18","Name: <b>PPOX=2<\/b><br/>Edges: <b>1<\/b><br/>Connection: <b>17<\/b><br/>Mean accuracy: <b>1<\/b><br/>Mean support: <b>17","Name: <b>NCKAP5L=2<\/b><br/>Edges: <b>1<\/b><br/>Connection: <b>17<\/b><br/>Mean accuracy: <b>1<\/b><br/>Mean support: <b>17","Name: <b>C11orf95=1<\/b><br/>Edges: <b>1<\/b><br/>Connection: <b>16.59<\/b><br/>Mean accuracy: <b>0.92<\/b><br/>Mean support: <b>18","Name: <b>COX2=1<\/b><br/>Edges: <b>1<\/b><br/>Connection: <b>16.06<\/b><br/>Mean accuracy: <b>0.94<\/b><br/>Mean support: <b>17","Name: <b>NCKAP5L=3<\/b><br/>Edges: <b>1<\/b><br/>Connection: <b>16.06<\/b><br/>Mean accuracy: <b>0.94<\/b><br/>Mean support: <b>17"],"group":["autism","autism","autism","autism","autism","autism","control","autism","autism","control","autism","control","autism","autism","control","autism","control","control","autism","autism","autism","control","autism","control","autism","autism","autism","control","control","autism","control","control","autism","autism","control","control","autism"],"font.size":[20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20]},"edges":{"from":["CAPS2=3","COX2=3","B3GNT7=3","COX2=3","234817_at=1","ATXN8OS=1","234817_at=1","MAP7=3","MSI2=3","COX2=3","COX2=3","CSTB=1","MAP7=2","MIR646HG=2","MAP7=2","CAPS2=3","COX2=1","NCS1=1","CSTB=1","234817_at=1","MAP7=3","NCKAP5L=1","B3GNT7=3","NCKAP5L=3","NPR2=3","PPOX=1","MAP7=2","NPR2=3","PPOX=2","PSMG4=3","C1QTNF7=2","CWF19L2=2","NPR2=1","PSMG4=3","RHPN1=3","PSMG4=3","SCIN=2","COX2=3","MIR646HG=2","MSI2=2","RHPN1=3","TCP11L1=1","COX2=3","MAP7=2","PSMG4=3","RHPN1=3","BAHD1=3","COX2=3","SCIN=2","TCP11L1=1","234817_at=1","C11orf95=1","NPR2=2","PPOX=1","MAP7=2","MIR646HG=2","NPR2=3","PSMG4=3"],"to":["CLDN17=2","CSTB=1","MAP7=2","MAP7=2","MAP7=3","MAP7=3","NCKAP5L=1","NCKAP5L=1","NCKAP5L=1","NCKAP5L=2","NCS1=2","NCS1=2","NCS1=2","NCS1=2","NPR2=1","NPR2=2","NPR2=2","NPR2=2","NPR2=3","PPOX=1","PPOX=1","PPOX=1","PSMG4=3","PSMG4=3","PSMG4=3","RHPN1=1","RHPN1=3","RHPN1=3","RHPN1=3","RHPN1=3","SCIN=2","SCIN=2","SCIN=2","SCIN=2","SCIN=2","TCP11L1=1","TCP11L1=1","TMLHE-AS1=1","TMLHE-AS1=1","TMLHE-AS1=1","TMLHE-AS1=1","TMLHE-AS1=1","TSPOAP1=3","TSPOAP1=3","TSPOAP1=3","TSPOAP1=3","ZFP36L2=1","ZFP36L2=1","ZFP36L2=1","ZFP36L2=1","ZSCAN18=1","ZSCAN18=1","ZSCAN18=1","ZSCAN18=1","ZSCAN18=3","ZSCAN18=3","ZSCAN18=3","ZSCAN18=3"],"conn":[17.49996,17,18,23,19.0454,18,17.52624,19.1526,18.05,17,20,20,17.52624,18,17,17,16.05548,19.0476,17,19.0238,18.1818,19.0238,17,16.05548,20,17.05266,17,17.03808,17,20.04534,19,19,16.05548,17,18.85598,18,18,17,18,19,18,19,18,18,20,19.0476,18,18,19,17,16.05548,16.58952,18.71899,17.07624,19.0476,17,17,21],"connNorm":[0.208002856928917,0.136009400217726,0.280007833514771,1,0.430543795683503,0.280007833514771,0.211787135755963,0.445980427732946,0.287207755179624,0.136009400217726,0.568004700108863,0.568004700108863,0.211787135755963,0.280007833514771,0.136009400217726,0.136009400217726,0,0.430860592236756,0.136009400217726,0.427433429524287,0.306186748688174,0.427433429524287,0.136009400217726,0,0.568004700108863,0.143592357715148,0.136009400217726,0.141492860557677,0.136009400217726,0.574533589074551,0.424006266811817,0.424006266811817,0,0.136009400217726,0.403267612448376,0.280007833514771,0.280007833514771,0.136009400217726,0.280007833514771,0.424006266811817,0.280007833514771,0.424006266811817,0.280007833514771,0.280007833514771,0.568004700108863,0.430860592236756,0.280007833514771,0.280007833514771,0.424006266811817,0.136009400217726,0,0.0769009233179544,0.383541267071015,0.146987840772292,0.430860592236756,0.136009400217726,0.136009400217726,0.712003133405909],"label2":["CAPS2=3-CLDN17=2","COX2=3-CSTB=1","B3GNT7=3-MAP7=2","COX2=3-MAP7=2","234817_at=1-MAP7=3","ATXN8OS=1-MAP7=3","234817_at=1-NCKAP5L=1","MAP7=3-NCKAP5L=1","MSI2=3-NCKAP5L=1","COX2=3-NCKAP5L=2","COX2=3-NCS1=2","CSTB=1-NCS1=2","MAP7=2-NCS1=2","MIR646HG=2-NCS1=2","MAP7=2-NPR2=1","CAPS2=3-NPR2=2","COX2=1-NPR2=2","NCS1=1-NPR2=2","CSTB=1-NPR2=3","234817_at=1-PPOX=1","MAP7=3-PPOX=1","NCKAP5L=1-PPOX=1","B3GNT7=3-PSMG4=3","NCKAP5L=3-PSMG4=3","NPR2=3-PSMG4=3","PPOX=1-RHPN1=1","MAP7=2-RHPN1=3","NPR2=3-RHPN1=3","PPOX=2-RHPN1=3","PSMG4=3-RHPN1=3","C1QTNF7=2-SCIN=2","CWF19L2=2-SCIN=2","NPR2=1-SCIN=2","PSMG4=3-SCIN=2","RHPN1=3-SCIN=2","PSMG4=3-TCP11L1=1","SCIN=2-TCP11L1=1","COX2=3-TMLHE-AS1=1","MIR646HG=2-TMLHE-AS1=1","MSI2=2-TMLHE-AS1=1","RHPN1=3-TMLHE-AS1=1","TCP11L1=1-TMLHE-AS1=1","COX2=3-TSPOAP1=3","MAP7=2-TSPOAP1=3","PSMG4=3-TSPOAP1=3","RHPN1=3-TSPOAP1=3","BAHD1=3-ZFP36L2=1","COX2=3-ZFP36L2=1","SCIN=2-ZFP36L2=1","TCP11L1=1-ZFP36L2=1","234817_at=1-ZSCAN18=1","C11orf95=1-ZSCAN18=1","NPR2=2-ZSCAN18=1","PPOX=1-ZSCAN18=1","MAP7=2-ZSCAN18=3","MIR646HG=2-ZSCAN18=3","NPR2=3-ZSCAN18=3","PSMG4=3-ZSCAN18=3"],"color":["#e5e5e2","#e5e5e2","#e5e5e2","#ea1d1d","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#dbcb33","#dbcb33","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#dbcb33","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#dbcb33","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#dbcb33","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#e5e5e2","#d86431"],"title":["From:  <b>CAPS2=3<\/b><br/>To: <b>CLDN17=2<\/b><br/>Connection: <b>17.5<\/b>","From:  <b>COX2=3<\/b><br/>To: <b>CSTB=1<\/b><br/>Connection: <b>17<\/b>","From:  <b>B3GNT7=3<\/b><br/>To: <b>MAP7=2<\/b><br/>Connection: <b>18<\/b>","From:  <b>COX2=3<\/b><br/>To: <b>MAP7=2<\/b><br/>Connection: <b>23<\/b>","From:  <b>234817_at=1<\/b><br/>To: <b>MAP7=3<\/b><br/>Connection: <b>19.05<\/b>","From:  <b>ATXN8OS=1<\/b><br/>To: <b>MAP7=3<\/b><br/>Connection: <b>18<\/b>","From:  <b>234817_at=1<\/b><br/>To: <b>NCKAP5L=1<\/b><br/>Connection: <b>17.53<\/b>","From:  <b>MAP7=3<\/b><br/>To: <b>NCKAP5L=1<\/b><br/>Connection: <b>19.15<\/b>","From:  <b>MSI2=3<\/b><br/>To: <b>NCKAP5L=1<\/b><br/>Connection: <b>18.05<\/b>","From:  <b>COX2=3<\/b><br/>To: <b>NCKAP5L=2<\/b><br/>Connection: <b>17<\/b>","From:  <b>COX2=3<\/b><br/>To: <b>NCS1=2<\/b><br/>Connection: <b>20<\/b>","From:  <b>CSTB=1<\/b><br/>To: <b>NCS1=2<\/b><br/>Connection: <b>20<\/b>","From:  <b>MAP7=2<\/b><br/>To: <b>NCS1=2<\/b><br/>Connection: <b>17.53<\/b>","From:  <b>MIR646HG=2<\/b><br/>To: <b>NCS1=2<\/b><br/>Connection: <b>18<\/b>","From:  <b>MAP7=2<\/b><br/>To: <b>NPR2=1<\/b><br/>Connection: <b>17<\/b>","From:  <b>CAPS2=3<\/b><br/>To: <b>NPR2=2<\/b><br/>Connection: <b>17<\/b>","From:  <b>COX2=1<\/b><br/>To: <b>NPR2=2<\/b><br/>Connection: <b>16.06<\/b>","From:  <b>NCS1=1<\/b><br/>To: <b>NPR2=2<\/b><br/>Connection: <b>19.05<\/b>","From:  <b>CSTB=1<\/b><br/>To: <b>NPR2=3<\/b><br/>Connection: <b>17<\/b>","From:  <b>234817_at=1<\/b><br/>To: <b>PPOX=1<\/b><br/>Connection: <b>19.02<\/b>","From:  <b>MAP7=3<\/b><br/>To: <b>PPOX=1<\/b><br/>Connection: <b>18.18<\/b>","From:  <b>NCKAP5L=1<\/b><br/>To: <b>PPOX=1<\/b><br/>Connection: <b>19.02<\/b>","From:  <b>B3GNT7=3<\/b><br/>To: <b>PSMG4=3<\/b><br/>Connection: <b>17<\/b>","From:  <b>NCKAP5L=3<\/b><br/>To: <b>PSMG4=3<\/b><br/>Connection: <b>16.06<\/b>","From:  <b>NPR2=3<\/b><br/>To: <b>PSMG4=3<\/b><br/>Connection: <b>20<\/b>","From:  <b>PPOX=1<\/b><br/>To: <b>RHPN1=1<\/b><br/>Connection: <b>17.05<\/b>","From:  <b>MAP7=2<\/b><br/>To: <b>RHPN1=3<\/b><br/>Connection: <b>17<\/b>","From:  <b>NPR2=3<\/b><br/>To: <b>RHPN1=3<\/b><br/>Connection: <b>17.04<\/b>","From:  <b>PPOX=2<\/b><br/>To: <b>RHPN1=3<\/b><br/>Connection: <b>17<\/b>","From:  <b>PSMG4=3<\/b><br/>To: <b>RHPN1=3<\/b><br/>Connection: <b>20.05<\/b>","From:  <b>C1QTNF7=2<\/b><br/>To: <b>SCIN=2<\/b><br/>Connection: <b>19<\/b>","From:  <b>CWF19L2=2<\/b><br/>To: <b>SCIN=2<\/b><br/>Connection: <b>19<\/b>","From:  <b>NPR2=1<\/b><br/>To: <b>SCIN=2<\/b><br/>Connection: <b>16.06<\/b>","From:  <b>PSMG4=3<\/b><br/>To: <b>SCIN=2<\/b><br/>Connection: <b>17<\/b>","From:  <b>RHPN1=3<\/b><br/>To: <b>SCIN=2<\/b><br/>Connection: <b>18.86<\/b>","From:  <b>PSMG4=3<\/b><br/>To: <b>TCP11L1=1<\/b><br/>Connection: <b>18<\/b>","From:  <b>SCIN=2<\/b><br/>To: <b>TCP11L1=1<\/b><br/>Connection: <b>18<\/b>","From:  <b>COX2=3<\/b><br/>To: <b>TMLHE-AS1=1<\/b><br/>Connection: <b>17<\/b>","From:  <b>MIR646HG=2<\/b><br/>To: <b>TMLHE-AS1=1<\/b><br/>Connection: <b>18<\/b>","From:  <b>MSI2=2<\/b><br/>To: <b>TMLHE-AS1=1<\/b><br/>Connection: <b>19<\/b>","From:  <b>RHPN1=3<\/b><br/>To: <b>TMLHE-AS1=1<\/b><br/>Connection: <b>18<\/b>","From:  <b>TCP11L1=1<\/b><br/>To: <b>TMLHE-AS1=1<\/b><br/>Connection: <b>19<\/b>","From:  <b>COX2=3<\/b><br/>To: <b>TSPOAP1=3<\/b><br/>Connection: <b>18<\/b>","From:  <b>MAP7=2<\/b><br/>To: <b>TSPOAP1=3<\/b><br/>Connection: <b>18<\/b>","From:  <b>PSMG4=3<\/b><br/>To: <b>TSPOAP1=3<\/b><br/>Connection: <b>20<\/b>","From:  <b>RHPN1=3<\/b><br/>To: <b>TSPOAP1=3<\/b><br/>Connection: <b>19.05<\/b>","From:  <b>BAHD1=3<\/b><br/>To: <b>ZFP36L2=1<\/b><br/>Connection: <b>18<\/b>","From:  <b>COX2=3<\/b><br/>To: <b>ZFP36L2=1<\/b><br/>Connection: <b>18<\/b>","From:  <b>SCIN=2<\/b><br/>To: <b>ZFP36L2=1<\/b><br/>Connection: <b>19<\/b>","From:  <b>TCP11L1=1<\/b><br/>To: <b>ZFP36L2=1<\/b><br/>Connection: <b>17<\/b>","From:  <b>234817_at=1<\/b><br/>To: <b>ZSCAN18=1<\/b><br/>Connection: <b>16.06<\/b>","From:  <b>C11orf95=1<\/b><br/>To: <b>ZSCAN18=1<\/b><br/>Connection: <b>16.59<\/b>","From:  <b>NPR2=2<\/b><br/>To: <b>ZSCAN18=1<\/b><br/>Connection: <b>18.72<\/b>","From:  <b>PPOX=1<\/b><br/>To: <b>ZSCAN18=1<\/b><br/>Connection: <b>17.08<\/b>","From:  <b>MAP7=2<\/b><br/>To: <b>ZSCAN18=3<\/b><br/>Connection: <b>19.05<\/b>","From:  <b>MIR646HG=2<\/b><br/>To: <b>ZSCAN18=3<\/b><br/>Connection: <b>17<\/b>","From:  <b>NPR2=3<\/b><br/>To: <b>ZSCAN18=3<\/b><br/>Connection: <b>17<\/b>","From:  <b>PSMG4=3<\/b><br/>To: <b>ZSCAN18=3<\/b><br/>Connection: <b>21<\/b>"],"width":[1.04001428464458,0.680047001088629,1.40003916757386,5,2.15271897841752,1.40003916757386,1.05893567877982,2.22990213866473,1.43603877589812,0.680047001088629,2.84002350054431,2.84002350054431,1.05893567877982,1.40003916757386,0.680047001088629,0.680047001088629,0,2.15430296118378,0.680047001088629,2.13716714762144,1.53093374344087,2.13716714762144,0.680047001088629,0,2.84002350054431,0.71796178857574,0.680047001088629,0.707464302788387,0.680047001088629,2.87266794537275,2.12003133405909,2.12003133405909,0,0.680047001088629,2.01633806224188,1.40003916757386,1.40003916757386,0.680047001088629,1.40003916757386,2.12003133405909,1.40003916757386,2.12003133405909,1.40003916757386,1.40003916757386,2.84002350054431,2.15430296118378,1.40003916757386,1.40003916757386,2.12003133405909,0.680047001088629,0,0.384504616589772,1.91770633535507,0.734939203861461,2.15430296118378,0.680047001088629,0.680047001088629,3.56001566702954]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"layout":{"randomSeed":123},"interaction":{"hover":true,"navigationButtons":true}},"groups":["autism","control"],"width":"100%","height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":true,"style":"width: 200px; height: 30px;\n                                                                padding-left: 80px;\n                               font-size: 15px;\n                               color: black;\n                               border:none;\n                               outline:none;","multiple":true,"hideColor":"rgba(200,200,200,0.5)","variable":"group","main":"Select by decision","values":["autism","control"]},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"}},"evals":[],"jsHooks":[]}</script>
+<p class="caption">
+The sample rule network for the autistic and non-autistic young males classifier from VisuNet (constructed for min support=17 and min accuracy=88%)
+</p>
+</div>
+<hr />
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references">
+<div id="ref-RN1">
+<p>Alter, Mark D., Rutwik Kharkar, Keri E. Ramsey, David W. Craig, Raun D. Melmed, Theresa A. Grebe, R. Curtis Bay, et al. 2011. “Autism and Increased Paternal Age Related Changes in Global Levels of Gene Expression Regulation.” Journal Article. <em>PloS One</em> 6 (2): e16715–e16715. <a href="https://doi.org/10.1371/journal.pone.0016715">https://doi.org/10.1371/journal.pone.0016715</a>.</p>
+</div>
+<div id="ref-RN2">
+<p>Garbulowski, Mateusz, Klev Diamanti, Karolina Smolińska, Patricia Stoll, Susanne Bornelöv, Aleksander Øhrn, and Jan Komorowski. 2019. “R.ROSETTA: A Package for Analysis of Rule-Based Classification Models.” Journal Article. <em>bioRxiv</em>, 625905. <a href="https://doi.org/10.1101/625905">https://doi.org/10.1101/625905</a>.</p>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
