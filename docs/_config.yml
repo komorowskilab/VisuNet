@@ -1,7 +1,0 @@
-remote_theme: pmarsceill/just-the-docs
-# Aux links for the upper right navigation
-aux_links:
-    "VisuNet on GitHub":
-      - "//github.com/komorowskilab/VisuNet"
-# Enable or disable the site search
-search_enabled: false

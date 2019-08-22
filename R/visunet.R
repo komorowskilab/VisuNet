@@ -129,7 +129,7 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL',  CustObjectNodes=li
                       width=12,
                       collapsible = TRUE,
                       solidHeader = TRUE,
-                      dataTableOutput("nodes_data_from_shiny"),
+                      #dataTableOutput("nodes_data_from_shiny"),
                       uiOutput('dt_UI'))
                 )),
         tabItem(tabName = "legend",
@@ -245,7 +245,7 @@ visunet = function(rules, type ='RDF', NodeColorType = 'DL',  CustObjectNodes=li
       data =  data()
       decisionName = input$decisions
       nodes = data[[decisionName]]$nodes
-      data[[decisionName]]$ RulesSetPerNode[[nodeInfo$selected]]
+      data[[decisionName]]$RulesSetPerNode[[nodeInfo$selected]]
     })
 
     output$dt_UI <- renderUI({
