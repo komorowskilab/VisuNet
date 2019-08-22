@@ -1,0 +1,12 @@
+name: "VisuNet"
+output_dir: "."
+navbar:
+  title: "VisuNet"
+  left:
+    - text: "About"
+      href: index.html
+    - text: "Tutorials"
+      href: about.html
+  right:
+    - icon: fa-github
+      href: https://github.com/komorowskilab/VisuNet.git

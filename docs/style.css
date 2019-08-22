@@ -1,0 +1,47 @@
+h1, .h1, h2, .h2, h3, .h3, h4, .h4{
+    margin-top: 84px;
+}
+
+/* ---------- TOC ----------------- */
+#TOC {
+  top: 40%;
+  position: fixed;
+  width: 210px;
+}
+.tocify {
+  border: none;
+  color: #495057;
+  border-radius: 0px;
+}
+
+.list-group-item.active {
+    color: #2CA7E3;
+    background-color: white;
+    border-left: solid;
+    border-color: #2CA7E3;
+}
+.list-group-item:hover {
+    color: #2CA7E3;
+    background-color: white;
+    border-left: solid;
+    border-color: #2CA7E3;
+}
+.tocify-extend-page {
+  display: none;
+}
+
+/* ------ This is just to fix the bug on Safari where table of content is on top of content */
+.toc-content {
+  margin-left: 210px
+}
+
+/* ------ Don't display on small media */
+@media (max-width: 1400px) {
+  #TOC {
+    width: auto;
+    display: none;
+  }
+  .toc-content {
+    margin-left: auto
+  }
+}
