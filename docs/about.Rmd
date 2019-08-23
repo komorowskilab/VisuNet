@@ -53,13 +53,13 @@ kable(autcon_ruleset[4:6,], format="html",  caption = "The sample 'line by line'
 ```
 
 
-You can use 'line by line' format with the option:
-`type = 'L'`
+You can use the 'line by line' format with the option:
+`type = "L"`
 
 
 ```{r, echo = TRUE, fig.align='center', warning=FALSE, eval=FALSE}
 rules <- data(autcon_ruleset)
-vis_out <- visunet(rules, type = 'L')
+vis_out <- visunet(rules, type = "L")
 ```
 <br>
 
@@ -68,12 +68,12 @@ vis_out <- visunet(rules, type = 'L')
 The rules data frame that is the output of R.ROSETTA can be directly imported in VisuNet. See **?rosetta** from the [R.ROSETTA](https://github.com/komorowskilab/R.ROSETTA.git) package for details.
 
 The R.ROSETTA output format can be used with the option:
-`type = 'RDF'`.
+`type = "RDF"`.
 
 ```{r, echo = TRUE, fig.align='center', warning=FALSE, eval=FALSE}
 #the rule-based model construction using R.ROSETTA
 resultsRos <- rosetta(autcon)
-vis_out <- visunet(resultsRos$main, type = 'RDF')
+vis_out <- visunet(resultsRos$main, type = "RDF")
 ```
 
 ***
@@ -90,7 +90,7 @@ data(autcon_ruleset)
 
 #Run VisuNet
 #Remember to click DONE once you finish working on VisuNet
-vis_out <- visunet(autcon_ruleset, type = 'L')
+vis_out <- visunet(autcon_ruleset, type = "L")
 ```
 
 The available `visunet` parameters are:
@@ -98,7 +98,7 @@ The available `visunet` parameters are:
 * `ruleSet`  - the appropriately formatted set of rules: [Input formats](#InputFormats)
 * `type` - a character string specifying the type of the input data:
     * `"RDF"` - the R.ROSETTA output (see  [R.Rosetta format](#RDF))
-    * `"L"` - "Line by line" file format (see ['line by line' format](#Lbl)) The default is `"RDF"`
+    * `"L"` - the "Line by line" file format (see ['line by line' format](#Lbl)) The default is `"RDF"`
 * `NodeColorType` - a character string specifying the color of nodes: 
     * `"DL"` - feature discretization levels, option is available for data discretized into three levels: 1 - `r icon::fa_circle(color = "#4CABE6", size = 2)`, 2 - `r icon::fa_circle( color = "#8E8E8E", size = 2)` and 3 - `r icon::fa_circle(color = "#E29402", size = 2)`. In the case of gene expression, data discretization levels correspond to: 1 - under-expressed gene, 2 - no change gene expression and 3 - over-expressed gene.
     * `"A"` - color of nodes defined by the mean accuracy value for the node.
@@ -149,7 +149,7 @@ The rule networks filtration panel:
 
 * `min Accuracy` - the minimum accuracy value for the set of rules that create the rule network
 * `min Support` - the minimum support value for the set of rules that create the rule network
-* `Show top n nodes` - enable to show the exact number of nodes according the connection value from the current rule network. Set '0' to switch off the parameter
+* `Show top n nodes` - enable to show the exact number of nodes according the connection value from the current rule network. Set "0" to switch off the parameter
 * `Color of nodes` - the node color schema. See  `NodeColorType` in the [Run Visunet](#runVisunet) section for details.
 
 
@@ -159,14 +159,14 @@ The rule networks filtration panel:
 ***
 # VisuNet output
 
-The VisuNet output is a collection of lists corresponding to decision variables and an additional list for the combined decision 'all'.
+The VisuNet output is a collection of lists corresponding to decision variables and an additional list for the combined decision "all".
 The lists contain information required to reproduce the rule network, i.e. data frames for  `nodes`, `edges` and `RulesSetPerNode` - a list that shows rules for each node. Data frames for `nodes` and `edges` incorporate essential variables from the [visNetwork](https://github.com/datastorm-open/visNetwork) package and variables that describe the quality of each node/edge obtained from the rules.
 
 
 Structure of the data frame for nodes:
  
 * `id` - a unique node id, based on attribute value and left-hand side value of the rule set
-* `label` - the attribute variable without the '=value' part from the left-hand side of the rule set
+* `label` - the attribute variable without the "=value" part from the left-hand side of the rule set
 * `DiscState` - the attribute value
 * `color.background`  - the node color (see *node color types* in section [Run Visunet](#runVisunet) for details)
 * `value` - the node size
@@ -177,7 +177,7 @@ Structure of the data frame for nodes:
 * `PrecRules` - fraction of rules that contain the node
 * `NodeConnection` - the total connection value obtained from the rules that contain the node
 * `title` - information visible on the tooltip
-* `group` -  the decision value that occurs most frequently (>50%) in rules associated with the node; otherwise group contains all comma-separated decision values corresponding to rules associated with the node. group defines the content of the 'Select by decision' drop-down box.
+* `group` -  the decision value that occurs most frequently (>50%) in rules associated with the node; otherwise group contains all comma-separated decision values corresponding to rules associated with the node. group defines the content of the "Select by decision" drop-down box.
 
 Structure of the data frame for edges:
 
@@ -205,24 +205,24 @@ We identified 11 genes previously reported in databases of autism associations: 
 
 ```{r, echo = TRUE, fig.align='center', warning=FALSE, eval=FALSE}
 #genes reported in databases of autism associations
-aut_genes <- c('TSPOAP1', 'COX2','NCS1','RHPN1','FLRT2',
-              'BAHD1','NCKAP5L','PPOX', 'NGR2',
-              'ATXN8OS','DEPDC1')
+aut_genes <- c("TSPOAP1", "COX2","NCS1","RHPN1","FLRT2",
+              "BAHD1","NCKAP5L","PPOX", "NGR2",
+              "ATXN8OS","DEPDC1")
 
-#create a new variable that contains node information for the 'all' decision
+#create a new variable that contains node information for the "all" decision
 nodes_RNO <- vis_out$all$nodes
 
-#create a new vector of variables: shape. 'dot' is the default shape of nodes
-nodes_RNO$shape <- rep('dot', length(nodes_RNO$label))
+#create a new vector of variables: shape. "dot" is the default shape of nodes
+nodes_RNO$shape <- rep("dot", length(nodes_RNO$label))
 
 #mark selected genes as stars using the label attribute 
-nodes_RNO$shape[which(as.character(nodes_RNO$label) %in% aut_genes)] <- 'star'
+nodes_RNO$shape[which(as.character(nodes_RNO$label) %in% aut_genes)] <- "star"
 
 #create the node object list
-nodesL <- list(nodes = nodes_RNO,CustCol =  c('shape'))
+nodesL <- list(nodes = nodes_RNO,CustCol =  c("shape"))
 
 #rerun VisuNet with the new shape for nodes
-vis_out2 <- visunet(autcon_ruleset, type = 'L', CustObjectNodes = nodesL)
+vis_out2 <- visunet(autcon_ruleset, type = "L", CustObjectNodes = nodesL)
 ```
 
 To rerun VisuNet with the customized object for nodes, you need to provide the original rule set and a list `CustObjectNodes` that contains the customized VisuNet object for nodes.
@@ -230,8 +230,8 @@ To rerun VisuNet with the customized object for nodes, you need to provide the o
 
 
 ```{r, echo = FALSE, warning=FALSE, fig.cap='Sample customized rule network for the autistic and non-autistic young males classifier from VisuNet. Marked genes reported in databases of autism associations (constructed for min support=17 and min accuracy=88%)'}
-vis_out <- readRDS('data/visunet_out_nodes.RDS')
-visNetwork(nodes = vis_out$nodes, edges = vis_out$edges, width = '100%')%>% 
+vis_out <- readRDS("data/visunet_out_nodes.RDS")
+visNetwork(nodes = vis_out$nodes, edges = vis_out$edges, width = "100%")%>% 
   visLayout(randomSeed = 123) %>%
   visInteraction(hover = TRUE, navigationButtons = TRUE) %>%
   visOptions(selectedBy = list(variable = "group" , multiple = TRUE, main = "Select by decision", style = 'width: 200px; height: 30px;
@@ -255,17 +255,17 @@ Let’s assume that COX2 controls MAP7 and we would like to show the directional
 #mark the interaction between COX2 and MAP7 genes
 edges_RNO <- vis_out$all$edges
 
-#create a new vector of variables: arrows. 'enabled' is the default variable for edges
-edges_RNO$arrows <- rep('enabled', length(edges_RNO$label2))
+#create a new vector of variables: arrows. "enabled" is the default variable for edges
+edges_RNO$arrows <- rep("enabled", length(edges_RNO$label2))
 
 #add direction to the selected edge using the label2 attribute 
-edges_RNO$arrows[which(edges_RNO$label2 == 'COX2=3-MAP7=2')] <- 'to'
+edges_RNO$arrows[which(edges_RNO$label2 == "COX2=3-MAP7=2")] <- "to"
 
 #create the edge object list
-edgesL <- list(edges = edges_RNO,CustCol =   c('arrows'))
+edgesL <- list(edges = edges_RNO,CustCol =   c("arrows"))
 
 #rerun VisuNet with a new variable for edges
-vis_out3 <- visunet(autcon_ruleset, type = 'L', CustObjectNodes = nodesL, CustObjectEdges = edgesL)
+vis_out3 <- visunet(autcon_ruleset, type = "L", CustObjectNodes = nodesL, CustObjectEdges = edgesL)
 ```
 
 We can rerun VisuNet using customized objects for edges by providing the original rule set and a list `CustObjectEdges` that contains the customized VisuNet object for edges. 
@@ -274,7 +274,7 @@ We can rerun VisuNet using customized objects for edges by providing the origina
 We can rerun VisuNet using both customized objects: `CustObjectEdges` and `CustObjectNodes`.  
 
 ```{r, echo = FALSE, warning=FALSE, message=FALSE, fig.cap='Sample customized rule network for the autistic and non-autistic young males classifier from VisuNet. Marked genes reported in databases of autism associations and the edge direction between COX2 and MAP7  (constructed for min support=17 and min accuracy=88%)'}
-vis_out <- readRDS('data/visunet_out_edges.RDS')
+vis_out <- readRDS("data/visunet_out_edges.RDS")
 visNetwork(nodes = vis_out$nodes, edges = vis_out$edges, width = '100%')%>% 
   visLayout(randomSeed = 123) %>%
   visInteraction(hover = TRUE, navigationButtons = TRUE) %>%
