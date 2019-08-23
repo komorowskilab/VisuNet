@@ -1,6 +1,6 @@
 # VisuNet: an interactive tool for network visualization of rule-based models in R
 
-<img src="images/VIsuNet_logo2.png" width=400; align="middle">
+<img src="images/VIsuNet_logo2.png" width=200; align="middle">
 
 
 
