@@ -9,4 +9,4 @@ VisuNet is an interactive tool for structural analysis of complex rule-based cla
 
 
 *** 
-See the [documentation](https://komorowskilab.github.io/VisuNet/)
+See the [documentation](https://komorowskilab.github.io/VisuNet/).
