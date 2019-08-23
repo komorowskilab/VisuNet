@@ -1,4 +1,4 @@
-# VisuNet: an interactive tool for rule network visualization in R
+# VisuNet: an interactive tool for network visualization of rule-based models in R
 
 VisuNet is implemented as an R package and using Shiny Gadget properties for rule network visualization of rule-based models. 
 
