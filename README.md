@@ -1,8 +1,7 @@
 # VisuNet: an interactive tool for network visualization of rule-based models in R
 
-<center>
-![](https://github.com/komorowskilab/VisuNet/blob/master/images/VIsuNet_logo2.png){width=30% }
-</center>
+<img src="images/VIsuNet_logo2.png" width=400; align="middle">
+
 
 
 *** 
