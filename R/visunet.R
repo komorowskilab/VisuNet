@@ -1,86 +1,110 @@
-#' Rule Network Visualistion gadget
+#' VisuNet: an interactive tool for network visualization of rule-based models in R
 #'
-#' This is a mostly empty package to learn roxygen documentation.
-#'
-#' Hello allows me to learn how to write documentation in comment blocks
-#' co-located with code.
-"_PACKAGE"
 
 #' visunet
 #' @import visNetwork shiny shinythemes R.ROSETTA
-#' @param rules data frame with rules information. Required at least four columns: "features",
-#' "accuracyRHS", "supportRHS" and "decision" and each row corresponds to one rule.\cr
-#' See the output of \code{\link[R.ROSETTA]{rosetta}} for the information about the rules data frame structure.
-#'#'
-#' @param type  character string specifying the type of the input data.  Three types implemented
-#' are "RDF" - the R.ROSETTA output (see \code{\link[R.ROSETTA]{rosetta}}), "L" - "Line by line" file format (see \code{\link[R.ROSETTA]{saveLineByLine}})
-#'The default is "RDF".
+#' @param ruleSet the appropriately formatted set of rules:
+#'\itemize{
+#' \item R.ROSETTA data frame - the rules data frame that is the output of R.ROSETTA can be directly imported in VisuNet.
+#' See \code{\link[R.ROSETTA]{rosetta}} for details.
+#' \item "Line by line" file format - input data should be in a data frame format that contains the following columns:
+#'\itemize{
+#'\item features - the left-hand side of the rule corresponding to comma-separated attributes and their values, of type, type ‘factor’
+#'\item decision - the right-hand side of the rule corresponding to the decision value, of type ‘factor’
+#'\item accuracyRHS - the rule accuracy, of type ‘numeric’
+#'\item supportRHS - the rule support, of type ’numeric
+#'}
+#'}
 #'
-#' @param NodeColorType character string specifying the color of nodes.
+#' @param type  a character string specifying the type of the input data:
 #' \itemize{
-#'   \item "DL" - feature discretization levels
-#'   \item "A" - feature distratization value
+#' \item "RDF" - the R.ROSETTA output (see \code{\link[R.ROSETTA]{rosetta}})
+#' \item "L" - the "Line by line" file format (see \code{\link[R.ROSETTA]{saveLineByLine}})
+#'}
+#'
+#' @param NodeColorType a character string specifying the color of nodes:
+#' \itemize{
+#'   \item "DL" - feature discretization levels, option is available for data discretized into three levels: 1, 2 and 3.
+#'   In the case of gene expression, data discretization levels correspond to: 1 - under-expressed gene, 2 - no change gene expression and 3 - over-expressed gene.
+#'   \item "A" - color of nodes defined by the mean accuracy value for the node.
 #' }
 #'The default is "DL".
 #'
-#' @param CustObjectNodes a list that contains customised VisuNet output for nodes. List need
-#' to contain two variables:
+#' @param CustObjectNodes a list that contains the customized VisuNet output for nodes. The list needs to contain two variables:
 #'\itemize{
-#'   \item nodes - customized VisuNet output for nodes
-#'   \item CustCol - names of variables added/changed in the VisuNet output for nodes.
-#'   See \code{\link[visNetwork]{visNodes}} for the full list of available variables.
+#'   \item nodes - a customized VisuNet output for nodes
+#'   \item CustCol - the names of variables added/changed in the VisuNet output for nodes.
+#'   See \code{\link[visNetwork]{visNodes}} for details.
 #' }
-#' Example use in the example section
 #'
-#' @param CustObjectEdges a list that contains customised VisuNet output for edges. List need
-#' to contain two variables:
+#' @param CustObjectEdges  a list that contains customized VisuNet output for edges.
+#' The list needs to contain two variables:
 #'\itemize{
-#'   \item edges - customized VisuNet output for nodes
-#'   \item CustCol - names of variables added/changed in the VisuNet output for nodes.
-#'   See \code{\link[visNetwork]{visEdges}} for the full list of available variables.
+#'   \item edges - a customized VisuNet output for edges
+#'   \item CustCol - the names of variables added/changed in the VisuNet output for edges.
+#'   See \code{\link[visNetwork]{visEdges}} for details.
 #' }
-#' Example use in the example section
 #'
-#' @return Rule Network Object.
+#'@references
+#' See the \href{https://komorowskilab.github.io/VisuNet/}{documentation} for more details and examples.
+#'
+#' @return Rule Network Object - a collection of lists corresponding to decision variables and an additional list for the combined decision ‘all’.
+#' The lists contain information required to reproduce the rule network, i.e. data frames for nodes, edges
+#' and RulesSetPerNode - a list that shows rules for each node.
+#' \cr
+#' \cr
+#' Structure of the data frame for nodes:
+#' \itemize{
+#' \item id - a unique node id, based on attribute value and left-hand side value of the rule set
+#' \item label - the attribute variable without the ‘=value’ part from the left-hand side of the rule set
+#' \item DiscState - the attribute value
+#' \item color.background - the node color
+#' \item value - the node size
+#' \item color.border - the color of the node border
+#' \item meanAcc - the mean accuracy value of all rules that contain the node
+#' \item meanSupp - the mean support value of all rules that contain the node
+#' \item NRules - the number of rules that contain the node
+#' \item PrecRules - fraction of rules that contain the node
+#' \item NodeConnection - the total connection value obtained from the rules that contain the node
+#' \item title - information visible on the tooltip
+#' \item group - the decision value that occurs most frequently (>50%) in rules associated with the node;
+#' otherwise group contains all comma-separated decision values corresponding to rules associated with the node.
+#' group defines the content of the ‘Select by decision’ drop-down box.
+#' }
+#'
+#' \cr
+#' Structure of the data frame for edges:
+#' \itemize{
+#' \item from, to - the pair of nodes that create the edge
+#' \item conn - the connection variable obtained from the edge-associated rules.
+#' \item connNorm - the connection variable normalized according to the maximum connection variable in the rule network
+#' \item label2 - the edge id
+#' \item color - the edge color
+#' \item title - information visible on the tooltip
+#' \item width - the edge width, defined according to the normalized connection value
+
+#'
+#' }
 #' @keywords misc
 #' @export
 #' @examples
 #'
-#' #R.ROSETTA output
-#' out = rosetta(autcon)
-#' rules = out$main
-#' vis_out = visunet(rules)
+#' #The R.ROSETTA output format
+#' #the rule-based model construction using R.ROSETTA
+#' resultsRos <- rosetta(autcon)
+#' vis_out <- visunet(resultsRos$main, type = "RDF")
 #'------------
+#'
 #' #"Line by line" file format
-#' rules = (read.csv2('LbL.txt', sep='\t', header = FALSE, col.names = c('features', 'decision', 'accuracyRHS', 'supportRHS'),stringsAsFactors=FALSE))
-#' rules$accuracyRHS = as.numeric(rules$accuracyRHS)
-#' rules$supportRHS = as.numeric(rules$supportRHS)
-#' rules$pValue = 0.05
-#' vis_out = visunet(rules, 'L')
+#' rules <- data(autcon_ruleset)
+#' vis_out <- visunet(rules, type = "L")
 #'
-#'------------
-#'#customisation of the VisuNet output for nodes
-#'nodes_RNO <- vis_out$all$nodes
-#'#Changing the nodes shape to stars
-#'nodes_RNO$shape <- rep('star', length(nodes_RNO$label))
-#'# a customized nodes list
-#'nodesL <- list(nodes = nodes_RNO,CustCol =  c('shape'))
-#'Rerun VisuNet with a customized nodes list
-#'vis_out2 <- visunet(rules, CustObjectNodes = nodesL)
-#'
-#'------------
-#'customisation of VisuNet output for edges
-#'Adding arrows to edges
-#'edges_RNO <- vis_out$all$edges
-#'edges_RNO$arrows <- rep('to', length(edges_RNO$label2))
-#'# a customized edges list
-#'edgesL <- list(edges = edges_RNO,CustCol =   c('arrows'))
-#'# Rerun VisuNet with a customized edges list
-#'vis_out3 <- visunet(rules, CustObjectEdges = edgesL)
 
 
 
-visunet = function(rules, type ='RDF', NodeColorType = 'DL',  CustObjectNodes=list(), CustObjectEdges=list()){
+
+visunet = function(ruleSet, type ="RDF", NodeColorType = "DL",  CustObjectNodes=list(), CustObjectEdges=list()){
+  rules <- ruleSet
   rules = data_input(rules, type)
   rules_10per_param = filtration_rules_10per(rules)
   minAcc = rules_10per_param$minAcc
