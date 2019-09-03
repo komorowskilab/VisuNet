@@ -56,8 +56,8 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
   if(NodeColorType == 'DL'){
     #color according to the discrete state - GENE EXPRESSION:
     NodeColor = rep('#999999', length(NodeUniq))
-    NodeColor[which(NodeState == min(NodeState))] = '#56B4E9'
-    NodeColor[which(NodeState == max(NodeState))] = '#E69F00'
+    NodeColor[which(NodeState == '1')] = '#56B4E9'
+    NodeColor[which(NodeState == '3')] = '#E69F00'
 
     #Nodes label
     NodeLabel = unlist(lapply(NodeUniq, function(x) strsplit(x, '=')[[1]][1]))
@@ -138,15 +138,15 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
     EdgesInfo2Ele=cbind(do.call(rbind,Nodes_vec[rules2elem]), rules[rules2elem,c("CONNECTION")])
 
     rules3AndMoreElem = which(AllRuleLen > 2)
-    if(is.null(dim(rules3AndMoreElem)) == FALSE){
+    #print(rules3AndMoreElem)
+    if(is.null(length(rules3AndMoreElem)) == FALSE){
       rules3AndMoreElemList = lapply(Nodes_vec[rules3AndMoreElem], function(x) matrix(x[combn(1:length(x), 2)],ncol = 2, byrow = TRUE))
       EdgesInfo3Ele = do.call(rbind,mapply('cbind',  rules3AndMoreElemList,
                                            (rules[rules3AndMoreElem,"CONNECTION"]), SIMPLIFY=FALSE))
-      EdgesInfoAll=rbind(EdgesInfo2Ele, EdgesInfo3Ele)
+       EdgesInfoAll=rbind(EdgesInfo2Ele, EdgesInfo3Ele)
     }else{
       EdgesInfoAll=EdgesInfo2Ele
     }
-
     EdgesInfoTemp = as.data.frame(EdgesInfoAll)
     colnames(EdgesInfoTemp) = c('from' , 'to' , 'conn')
     EdgesInfoAllSort=t(apply(subset(EdgesInfoTemp, select=c("from", "to")), 1, sort))
@@ -183,18 +183,20 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
       NEWNodeInfoDF[CustCol[ind_Col[i]]] = as.character(unlist(NEWNodeInfoDF[CustCol[ind_Col[i]]]))
       NewDataNodesDF[CustCol[ind_Col[i]]] = as.character(unlist(NewDataNodesDF[CustCol[ind_Col[i]]]))
       NEWNodeInfoDF[match(  NewDataNodesDF_int$id, as.character(NEWNodeInfoDF$id)),CustCol[ind_Col[i]]] = NewDataNodesDF_int[CustCol[ind_Col[i]]]
-    }
+      }
 
     ind_Col_diff = CustCol[setdiff(seq(1, length(CustCol)),ind_Col)]
+
     }else{ind_Col_diff = CustCol}
+    if(length(ind_Col_diff) != 0){
     for(i in 1:length(ind_Col_diff)){
       NEWNodeInfoDF$newcolumn = rep(NA, length(NEWNodeInfoDF$id))
-      colnames(NEWNodeInfoDF)[which(colnames(NEWNodeInfoDF) == 'newcolumn')] = ind_Col_diff[i]
       NewDataNodesDF[ind_Col_diff[i]] = as.character(unlist(NewDataNodesDF[ind_Col_diff[i]]))
 
       NEWNodeInfoDF[match(  NewDataNodesDF_int$id, as.character(NEWNodeInfoDF$id)),ind_Col_diff[i]] = NewDataNodesDF_int[ind_Col_diff[i]]
 
     }
+      }
     NodeInfoDF = NEWNodeInfoDF
 
   }

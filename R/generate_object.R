@@ -8,7 +8,6 @@ generate_object = function(decs, rules,type,  TopNodes,  NodeColorType,  NewData
     RulesDec = rules[which(rules$decision ==i),]
     #generate nodes and edges for decision
     RulesSetSize=dim(RulesDec)[1]
-    #print(dim(RulesDec))
     if(RulesSetSize != 0){
       Net = generateNet(i, RulesDec, type, RulesSetSize, TopNodes, NodeColorType = NodeColorType, NewDataNodes, NewDataEdges)
     }else{
