@@ -17,9 +17,9 @@ filtration_rules_10per = function(rules){
 
   minAcc = min(rules_order_10perc$accuracyRHS)
   minSupp = min(rules_order_10perc$supportRHS)
-  if("PERC_supportRHS" %in% colnames(rules_order_10perc)) minPrecSupp = min(rules_order_10perc$PERC_supportRHS) else minPrecSupp = 0
+  if("DecisionCoverage" %in% colnames(rules_order_10perc)) DecisionCoverage = min(rules_order_10perc$DecisionCoverage) else DecisionCoverage = 0
 
-  out_rules_order_10perc = list(rules = rules_order_10perc, minAcc = minAcc, minSupp = minSupp, minPrecSupp = minPrecSupp )
+  out_rules_order_10perc = list(rules = rules_order_10perc, minAcc = minAcc, minSupp = minSupp, DecisionCoverage = DecisionCoverage)
 
   return(out_rules_order_10perc )
 }

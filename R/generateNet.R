@@ -20,7 +20,7 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
   NodeState = NULL
   meanAcc = NULL
   meanSupp = NULL
-  meanPrecSupp = NULL
+  DecisionCoverage = NULL
   NRules = NULL
   PrecRules = NULL
   NodeConnection = NULL
@@ -37,7 +37,7 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
     #mean support
     meanSupp = c(meanSupp, mean(rules[node_id,"supportRHS"]))
     #mean % support
-    if("PERC_supportRHS" %in% colnames(rules[node_id,])) meanPrecSupp = c(meanPrecSupp, mean(rules[node_id,"PERC_supportRHS"])) else meanPrecSupp = c(meanPrecSupp, NA)
+    if("PERC_supportRHS" %in% colnames(rules[node_id,])) DecisionCoverage = c(DecisionCoverage, mean(rules[node_id,"PERC_supportRHS"])) else DecisionCoverage = c(DecisionCoverage, NA)
     # number of rules
     NRules = c(NRules, dim(rules[node_id,])[1])
     # % from rules in decision
@@ -88,13 +88,13 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
 
 
 
-  if (is.na(meanPrecSupp)[1] == FALSE){
+  if (is.na(DecisionCoverage)[1] == FALSE){
     NodeTitle = paste0('Name: <b>', NodeUniq, '</b><br/>Edges: <b>', NRules, '</b><br/>Connection: <b>',  round(NodeConnection,2),
-                       '</b><br/>Mean accuracy: <b>', round(meanAcc,2), '</b><br/>Mean % support: <b>', round(meanPrecSupp,2))
+                       '</b><br/>Mean accuracy: <b>', round(meanAcc,2), '</b><br/>Mean % support: <b>', round(DecisionCoverage,2))
     #Node Info data frame
-    NodeInfoDF = data.frame(id = NodeUniq,  label =  NodeLabel, DiscState = NodeState, color.background = NodeColor, value = meanPrecSupp,
+    NodeInfoDF = data.frame(id = NodeUniq,  label =  NodeLabel, DiscState = NodeState, color.background = NodeColor, value = DecisionCoverage,
                             borderWidth = (PrecRules*20), color.border = c("#0072B2"),
-                            meanAcc = meanAcc, meanSupp = meanSupp, meanPERC_SUPP = meanPrecSupp, NRules = NRules,
+                            meanAcc = meanAcc, meanSupp = meanSupp, meanPERC_SUPP = DecisionCoverage, NRules = NRules,
                             PrecRules = PrecRules, NodeConnection = NodeConnection, title = NodeTitle)
   }else{
     NodeTitle = paste0('Name: <b>', NodeUniq, '</b><br/>Edges: <b>', NRules, '</b><br/>Connection: <b>',  round(NodeConnection,2),
@@ -113,11 +113,11 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
   NodeInfoDF$font.size = 20
 
   # NodeTitle = paste0('Name: <b>', NodeUniq, '</b><br/>Edges: <b>', NRules, '</b><br/>Connection: <b>',  round(NodeConnection,2),
-  #                   '</b><br/>Mean accuracy: <b>', round(meanAcc,2), '</b><br/>Mean % support: <b>', round(meanPrecSupp,2))
+  #                   '</b><br/>Mean accuracy: <b>', round(meanAcc,2), '</b><br/>Mean % support: <b>', round(DecisionCoverage,2))
   #Node Info data frame
-  # NodeInfoDF = data.frame(id = NodeUniq,  label =  NodeLabel, DiscState = NodeState, color.background = NodeColor, value = meanPrecSupp,
+  # NodeInfoDF = data.frame(id = NodeUniq,  label =  NodeLabel, DiscState = NodeState, color.background = NodeColor, value = DecisionCoverage,
   #                         borderWidth = (PrecRules*100), color.border = c("#0072B2"),
-  #                         meanAcc = meanAcc, meanSupp = meanSupp, meanPrecSupp = meanPrecSupp, NRules = NRules,
+  #                         meanAcc = meanAcc, meanSupp = meanSupp, DecisionCoverage = DecisionCoverage, NRules = NRules,
   #                         PrecRules = PrecRules, NodeConnection = NodeConnection, title = NodeTitle)
 
 
@@ -139,11 +139,12 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
 
     rules3AndMoreElem = which(AllRuleLen > 2)
     #print(rules3AndMoreElem)
-    if(is.null(length(rules3AndMoreElem)) == FALSE){
+    if(!is.null(length(rules3AndMoreElem))){
       rules3AndMoreElemList = lapply(Nodes_vec[rules3AndMoreElem], function(x) matrix(x[combn(1:length(x), 2)],ncol = 2, byrow = TRUE))
       EdgesInfo3Ele = do.call(rbind,mapply('cbind',  rules3AndMoreElemList,
                                            (rules[rules3AndMoreElem,"CONNECTION"]), SIMPLIFY=FALSE))
-       EdgesInfoAll=rbind(EdgesInfo2Ele, EdgesInfo3Ele)
+      if(length(EdgesInfo2Ele) == 0){ EdgesInfoAll=EdgesInfo3Ele }else{  EdgesInfoAll=rbind(EdgesInfo2Ele, EdgesInfo3Ele)}
+      #EdgesInfoAll=rbind(EdgesInfo2Ele, EdgesInfo3Ele)
     }else{
       EdgesInfoAll=EdgesInfo2Ele
     }

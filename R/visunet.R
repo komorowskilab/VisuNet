@@ -111,6 +111,7 @@ visunet = function(ruleSet, type ="RDF", NodeColorType = "DL",  CustObjectNodes=
   minSupp = rules_10per_param$minSupp
 
 
+
   ui <- dashboardPage(
     header <- dashboardHeader(title = "VisuNet", tags$li(class = "dropdown", actionButton("done", "Done"))),
 
