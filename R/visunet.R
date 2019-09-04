@@ -103,13 +103,13 @@
 
 
 
-visunet = function(ruleSet, type ="RDF", NodeColorType = "DL",  CustObjectNodes=list(), CustObjectEdges=list()){
+visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL",  CustObjectNodes=list(), CustObjectEdges=list()){
   rules <- ruleSet
-  rules = data_input(rules, type)
-  rules_10per_param = filtration_rules_10per(rules)
-  minAcc = rules_10per_param$minAcc
-  minSupp = rules_10per_param$minSupp
-
+  rules <-  data_input(rules, type)
+  rules_10per_param <-  filtration_rules_10per(rules)
+  minAcc <-  rules_10per_param$minAcc
+  minSupp <-  rules_10per_param$minSupp
+  minDecisionCoverageV <- rules_10per_param$DecisionCoverage
 
 
   ui <- dashboardPage(
