@@ -9,6 +9,12 @@ VisuNet is an interactive tool for network visualization of complex rule-based c
 
 VisuNet is implemented in R and uses the  [Shiny Gadgets](https://shiny.rstudio.com/articles/gadgets.html) attributes. The tool includes construction, filtration, visualization and customization of networks from rule-based models.
 
+***
+Installation
+```R
+devtools::install_github("komorowskilab/VisuNet")
+```
+
 
 *** 
 See the [documentation](https://komorowskilab.github.io/VisuNet/).
