@@ -129,6 +129,7 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL",  CustObjectNodes
 
     sidebar <- dashboardSidebar(
       sidebarMenu(
+        tags$style(".skin-blue .sidebar a { color: #444; }"),
         uiOutput("decisions"),
         hr(),
         sliderInput("accuracy", ("Min Accuracy"),
@@ -141,7 +142,8 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL",  CustObjectNodes
         selectInput("NodeColor",label = ("Color of nodes"), choices =  c('Accuracy value' = 'A','Discretization Levels' = 'DL'), selected = NodeColorType),
 
         actionButton("run", "Run"),
-        downloadButton('saveHTML', 'Save network as .html'),
+       # downloadButton('saveHTML', 'Save network as .html'),
+        uiOutput("download", class =  "butt1"),
         menuItem("Network", icon = icon("project-diagram"), tabName = "network") ,
         menuItem("Legend", icon = icon("sliders"), tabName = "legend")
       )
@@ -271,6 +273,8 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL",  CustObjectNodes
   #   }
   #  })
     output$FiltrParam = renderUI({ #creates State select box object called in ui
+
+
       selectInput(
         inputId = "FiltrParam",
         label = "",
@@ -351,6 +355,13 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL",  CustObjectNodes
 
       }
     )
+
+    output$download <- renderUI({
+      if(input$run !=0) {
+        downloadButton('saveHTML', 'Download Output File')
+      }
+    })
+
 
     observeEvent(input$done, {
       stopApp(data())
