@@ -271,19 +271,6 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL",  CustObjectNodes
   #   }
   #  })
     output$FiltrParam = renderUI({ #creates State select box object called in ui
-      radioGroupButtons(
-        inputId = "FiltrParam",
-        label = "",
-        choices = as.character(choices_v),
-        status = "primary",
-        selected = as.character(choices_v)[1],
-        checkIcon = list(
-          yes = icon("ok",
-                     lib = "glyphicon"),
-          no = icon("remove",
-                    lib = "glyphicon"))
-      )
-
       selectInput(
         inputId = "FiltrParam",
         label = "",
