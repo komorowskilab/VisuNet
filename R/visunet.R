@@ -109,7 +109,19 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL",  CustObjectNodes
   rules_10per_param <-  filtration_rules_10per(rules)
   minAcc <-  rules_10per_param$minAcc
   minSupp <-  rules_10per_param$minSupp
-  minDecisionCoverageV <- rules_10per_param$DecisionCoverage
+  minDecisionCoverage <- rules_10per_param$minDecisionCoverage
+
+  if(minDecisionCoverage == 0){
+    choices_v <- 'Min Support'
+    names(choices_v) <- 'minSupp'
+    choices_values <- minSupp
+    names(choices_values) <- 'minSupp'
+  }else{
+      choices_v <- c('Min Support', 'Min Decision Coverage')
+      names(choices_v) <- c('minSupp', 'minDecisionCoverage')
+      choices_values <- c(minSupp, minDecisionCoverage)
+      names(choices_values) <- c('minSupp', 'minDecisionCoverage')
+      }
 
 
   ui <- dashboardPage(
@@ -121,7 +133,10 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL",  CustObjectNodes
         hr(),
         sliderInput("accuracy", ("Min Accuracy"),
                     min = 0, max = 1, value = minAcc, step = 0.01),
-        uiOutput("support"),
+
+        uiOutput("FiltrParam"),
+        uiOutput("value_slider"),
+
         numericInput("TopNodes", label = ("Show top n nodes"), value = 0),
         selectInput("NodeColor",label = ("Color of nodes"), choices =  c('Accuracy value' = 'A','Discretization Levels' = 'DL'), selected = NodeColorType),
 
@@ -132,7 +147,6 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL",  CustObjectNodes
       )
     ),
     body <- dashboardBody(
-     # tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}"),
       tabItems(
         tabItem(tabName = 'network',title = 'Network',
 
@@ -178,9 +192,9 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL",  CustObjectNodes
 
     data <- eventReactive( input$run, {
       validate(
-        filter_rules(rules, input$accuracy, input$support)
+        filter_rules(rules, input$accuracy, input$support, input$FiltrParam, input$value_slider)
       )
-      RulesFiltr =  filtration_rules(rules, input$accuracy, input$support)
+      RulesFiltr =  filtration_rules(rules, input$accuracy, input$FiltrParam, input$value_slider)
       data_input=generate_object(decs, RulesFiltr,type, input$TopNodes, input$NodeColor,  CustObjectNodes, CustObjectEdges)
       return(data_input)
     })
@@ -245,9 +259,63 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL",  CustObjectNodes
    #   selectInput("Select",label = ("Select by decision"), choices =  as.character(decs_f), selected = decs_f[1])
    # })
 
+    #ParameterInput <- reactive({
+   #   switch(input$FiltrationParam,
+   #          "min Support" = minSuppV,
+   #          "min Decision Coverage" = minDecisionCoverageV)
+   #   })
+
+   # output$nrows <- reactive({
+   #   if(ParameterInput() == minSuppV){
+
+  #   }
+  #  })
+    output$FiltrParam = renderUI({ #creates State select box object called in ui
+      radioGroupButtons(
+        inputId = "FiltrParam",
+        label = "",
+        choices = as.character(choices_v),
+        status = "primary",
+        selected = as.character(choices_v)[1],
+        checkIcon = list(
+          yes = icon("ok",
+                     lib = "glyphicon"),
+          no = icon("remove",
+                    lib = "glyphicon"))
+      )
+
+      selectInput(
+        inputId = "FiltrParam",
+        label = "",
+        choices = as.character(choices_v),
+        selected = as.character(choices_v)[1])
+      })
+
+    data_available <- eventReactive( input$FiltrParam, {
+    data_available <- choices_v[choices_v == input$FiltrParam]
+    })
+    output$value_slider = renderUI({
+     # data_available <- choices_v[choices_v == input$FiltrParam]
+      data_available = data_available()
+      value_available <- choices_values[names(choices_values) == names(data_available)]
+      if(names(data_available) == 'minSupp'){
+        value_available_max <- max(rules$supportRHS)
+        step = 1
+      }else{
+        value_available_max <- max(rules$decisionCoverage)
+        step = 0.01
+        }
+      sliderInput(inputId = "value_slider",
+                  label = '',
+                  min = 0,
+                  max = value_available_max,
+                  value = value_available,
+                  step = step)
+    })
+
     output$support <- renderUI({
       sliderInput("support", ("Min Support"),
-                  min = 0, max = max(rules$supportRHS), value = minSupp, step = 1)
+                  min = 0, max = max(rules$supportRHS), value = minSupp, step = 0.01)
     })
 
     output$NodeColor <- renderUI({

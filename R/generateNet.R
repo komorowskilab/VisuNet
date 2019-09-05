@@ -20,7 +20,7 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
   NodeState = NULL
   meanAcc = NULL
   meanSupp = NULL
-  DecisionCoverage = NULL
+  meanDecisionCoverage = NULL
   NRules = NULL
   PrecRules = NULL
   NodeConnection = NULL
@@ -37,7 +37,7 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
     #mean support
     meanSupp = c(meanSupp, mean(rules[node_id,"supportRHS"]))
     #mean % support
-    if("PERC_supportRHS" %in% colnames(rules[node_id,])) DecisionCoverage = c(DecisionCoverage, mean(rules[node_id,"PERC_supportRHS"])) else DecisionCoverage = c(DecisionCoverage, NA)
+    if("decisionCoverage" %in% colnames(rules[node_id,])) meanDecisionCoverage = c(meanDecisionCoverage, mean(rules[node_id,"decisionCoverage"])) else meanDecisionCoverage = c(meanDecisionCoverage, NA)
     # number of rules
     NRules = c(NRules, dim(rules[node_id,])[1])
     # % from rules in decision
@@ -88,13 +88,13 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
 
 
 
-  if (is.na(DecisionCoverage)[1] == FALSE){
+  if (is.na(meanDecisionCoverage)[1] == FALSE){
     NodeTitle = paste0('Name: <b>', NodeUniq, '</b><br/>Edges: <b>', NRules, '</b><br/>Connection: <b>',  round(NodeConnection,2),
-                       '</b><br/>Mean accuracy: <b>', round(meanAcc,2), '</b><br/>Mean % support: <b>', round(DecisionCoverage,2))
+                       '</b><br/>Mean accuracy: <b>', round(meanAcc,2), '</b><br/>Mean Decision Coverage: <b>', round(meanDecisionCoverage,2))
     #Node Info data frame
-    NodeInfoDF = data.frame(id = NodeUniq,  label =  NodeLabel, DiscState = NodeState, color.background = NodeColor, value = DecisionCoverage,
+    NodeInfoDF = data.frame(id = NodeUniq,  label =  NodeLabel, DiscState = NodeState, color.background = NodeColor, value = meanDecisionCoverage,
                             borderWidth = (PrecRules*20), color.border = c("#0072B2"),
-                            meanAcc = meanAcc, meanSupp = meanSupp, meanPERC_SUPP = DecisionCoverage, NRules = NRules,
+                            meanAcc = meanAcc, meanSupp = meanSupp, meanDecisionCoverage = meanDecisionCoverage, NRules = NRules,
                             PrecRules = PrecRules, NodeConnection = NodeConnection, title = NodeTitle)
   }else{
     NodeTitle = paste0('Name: <b>', NodeUniq, '</b><br/>Edges: <b>', NRules, '</b><br/>Connection: <b>',  round(NodeConnection,2),

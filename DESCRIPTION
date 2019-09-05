@@ -9,6 +9,7 @@ Depends: R (>= 3.5.0),
     shiny,
     shinydashboard,
     shinythemes,
+    plyr,
     dashboardthemes,
     R.ROSETTA (>= 2.0.0),
 License: GPL (>= 2)
@@ -19,11 +20,11 @@ Imports:
     shiny,
     shinydashboard,
     shinythemes,
+    plyr,
     dashboardthemes,
     R.ROSETTA
 Remotes: 
     datastorm-open/visNetwork,
-    rstudio/shinydashboard,
     mategarb/R.ROSETTA,
     nik01010/dashboardthemes
 RoxygenNote: 6.1.1

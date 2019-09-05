@@ -1,21 +1,7 @@
 data_input = function(data1, type){
   #R.Rosetta output
   text_out = 'Incorrect data structure. Please check help.'
-  if(type == 'RDF'){
-    validate(
-      need("supportRHS" %in% colnames(data1), text_out),
-      need("accuracyRHS" %in% colnames(data1), text_out),
-      need("decision" %in% colnames(data1), text_out),
-      need("features" %in% colnames(data1), text_out),
-      need(is.numeric(data1$accuracyRHS), 'Accuracy is not numeric'),
-      need(is.numeric(data1$supportRHS), 'Support is not numeric'),
-      RDF_columns_test(colnames(data1),text_out)
-    )
-    if("pValue" %in% colnames(data1) == FALSE){ data1$pValue = 0.05}
-    if(!isTRUE("levels" %in% colnames(data1))){
-      data1$levels = data1$CUTS_COND}
-    df = data1
-  }else if(type == 'L'){
+  if(type == 'RDF' | type == 'L'){
     validate(
       need("supportRHS" %in% colnames(data1), text_out),
       need("accuracyRHS" %in% colnames(data1), text_out),
@@ -25,7 +11,32 @@ data_input = function(data1, type){
       need(is.numeric(data1$supportRHS), 'Support is not numeric')
     )
     if("pValue" %in% colnames(data1) == FALSE){ data1$pValue = 0.05}
-    df = data1
+    if("decisionCoverage" %in% colnames(data1) | "coverageRHS" %in% colnames(data1)){
+      data1 <-
+        data1 %>%
+        plyr::rename(., replace      = c("coverageRHS" = "decisionCoverage" ), warn_missing = FALSE)
+      #data1 <- data1 %>% rename(decisionCoverage = coverageRHS)
+      validate(
+        need(is.numeric(data1$decisionCoverage), 'Decision coverage is not numeric')
+      )
+    }
+
+    if(type == 'RDF'){validate(RDF_columns_test(colnames(data1),text_out))}
+    if(!isTRUE("levels" %in% colnames(data1))){
+      data1$levels = data1$CUTS_COND}
+      df = data1
+ # }else if(type == 'L'){
+  #  validate(
+  #    need("supportRHS" %in% colnames(data1), text_out),
+ #     need("accuracyRHS" %in% colnames(data1), text_out),
+  #    need("decision" %in% colnames(data1), text_out),
+ #     need("features" %in% colnames(data1), text_out),
+ #     need(is.numeric(data1$accuracyRHS), 'Accuracy is not numeric'),
+ #     need(is.numeric(data1$supportRHS), 'Support is not numeric')
+#    )
+#    if("pValue" %in% colnames(data1) == FALSE){ data1$pValue = 0.05}
+
+#    df = data1
   }else if(type == 'RGUI'){
     dataset_merged = data1
     rl = dataset_merged[-lapply(dataset_merged, function(x) grep('%', x))[[1]],]
