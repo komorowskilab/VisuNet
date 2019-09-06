@@ -90,7 +90,8 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
 
   if (is.na(meanDecisionCoverage)[1] == FALSE){
     NodeTitle = paste0('Name: <b>', NodeUniq, '</b><br/>Edges: <b>', NRules, '</b><br/>Connection: <b>',  round(NodeConnection,2),
-                       '</b><br/>Mean accuracy: <b>', round(meanAcc,2), '</b><br/>Mean Decision Coverage: <b>', round(meanDecisionCoverage,2))
+                       '</b><br/>Mean accuracy: <b>', round(meanAcc,2), '</b><br/>Mean support: <b>', round(meanSupp,2),
+                       '</b><br/>Mean decision coverage: <b>', round(meanDecisionCoverage,2))
     #Node Info data frame
     NodeInfoDF = data.frame(id = NodeUniq,  label =  NodeLabel, DiscState = NodeState, color.background = NodeColor, value = meanDecisionCoverage,
                             borderWidth = (PrecRules*20), color.border = c("#0072B2"),
