@@ -117,10 +117,10 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL",  CustObjectNodes
     choices_values <- minSupp
     names(choices_values) <- 'minSupp'
   }else{
-      choices_v <- c('Min Support', 'Min Decision Coverage')
-      names(choices_v) <- c('minSupp', 'minDecisionCoverage')
-      choices_values <- c(minSupp, minDecisionCoverage)
-      names(choices_values) <- c('minSupp', 'minDecisionCoverage')
+      choices_v <- c('Min Decision Coverage', 'Min Support')
+      names(choices_v) <- c('minDecisionCoverage', 'minSupp' )
+      choices_values <- c(minDecisionCoverage, minSupp )
+      names(choices_values) <- c('minDecisionCoverage', 'minSupp')
       }
 
 
