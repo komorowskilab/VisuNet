@@ -1,7 +1,7 @@
 #' VisuNet: an interactive tool for network visualization of rule-based models in R
 #'
 
-#' visunet
+#' VisuNet is an interactive tool for network visualization of complex rule-based classifiers. See the \href{https://komorowskilab.github.io/VisuNet/}{documentation}.
 #' @import visNetwork shiny shinythemes R.ROSETTA
 #' @param ruleSet the appropriately formatted set of rules:
 #'\itemize{
@@ -9,10 +9,11 @@
 #' See \code{\link[R.ROSETTA]{rosetta}} for details.
 #' \item "Line by line" file format - input data should be in a data frame format that contains the following columns:
 #'\itemize{
-#'\item features - the left-hand side of the rule corresponding to comma-separated attributes and their values, of type, type ‘factor’
-#'\item decision - the right-hand side of the rule corresponding to the decision value, of type ‘factor’
-#'\item accuracyRHS - the rule accuracy, of type ‘numeric’
-#'\item supportRHS - the rule support, of type ’numeric
+#'\item features - the left-hand side of the rule corresponding to comma-separated attributes and their values, of type, type "factor"
+#'\item decision - the right-hand side of the rule corresponding to the decision value, of type "factor"
+#'\item accuracyRHS - the rule accuracy, of type "numeric"
+#'\item supportRHS - the rule support, of type "numeric"
+#'\item decisionCoverage or coverageRHS - the fraction of correcly classfied objects, of type "numeric"
 #'}
 #'}
 #'
