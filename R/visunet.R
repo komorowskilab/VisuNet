@@ -104,7 +104,7 @@
 
 
 
-visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL",  CustObjectNodes=list(), CustObjectEdges=list()){
+visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL", NodeSize = "DC",  CustObjectNodes=list(), CustObjectEdges=list()){
   rules <- ruleSet
   rules <-  data_input(rules, type)
   rules_10per_param <-  filtration_rules_10per(rules)
@@ -113,15 +113,16 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL",  CustObjectNodes
   minDecisionCoverage <- rules_10per_param$minDecisionCoverage
 
   if(minDecisionCoverage == 0){
+    NodeSize = 'S'
     choices_v <- 'Min Support'
-    names(choices_v) <- 'minSupp'
+    names(choices_v) <- 'S'
     choices_values <- minSupp
-    names(choices_values) <- 'minSupp'
+    names(choices_values) <- 'S'
   }else{
       choices_v <- c('Min Decision Coverage', 'Min Support')
-      names(choices_v) <- c('minDecisionCoverage', 'minSupp' )
+      names(choices_v) <- c('DC', 'S' )
       choices_values <- c(minDecisionCoverage, minSupp )
-      names(choices_values) <- c('minDecisionCoverage', 'minSupp')
+      names(choices_values) <- c('DC', 'S')
       }
 
 
@@ -249,7 +250,11 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL",  CustObjectNodes
 
 
     output$decisions <- renderUI({
-      selectInput("decisions",label = ("Choose decision"), choices =  as.character(decs_f), selected = decs_f[1])
+      selectInput("decisions",label = ("Choose decision"),
+
+
+
+                  choices =  as.character(decs_f), selected = decs_f[1])
     })
 
 
@@ -260,7 +265,7 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL",  CustObjectNodes
         inputId = "FiltrParam",
         label = "",
         choices = as.character(choices_v),
-        selected = as.character(choices_v)[1])
+        selected = NodeSize)
       })
 
     data_available <- eventReactive( input$FiltrParam, {
@@ -270,7 +275,7 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL",  CustObjectNodes
      # data_available <- choices_v[choices_v == input$FiltrParam]
       data_available = data_available()
       value_available <- choices_values[names(choices_values) == names(data_available)]
-      if(names(data_available) == 'minSupp'){
+      if(names(data_available) == 'S'){
         value_available_max <- max(rules$supportRHS)
         step = 1
       }else{
