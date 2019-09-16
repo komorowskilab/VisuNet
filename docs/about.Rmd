@@ -40,7 +40,8 @@ Input data should be in a data frame format that contains the following columns:
 * `features` - the left-hand side of the rule corresponding to comma-separated attributes and their values, of type, type 'factor' 
 * `decision` - the right-hand side of the rule corresponding to the decision value, of type 'factor'
 * `accuracyRHS` - the rule accuracy, of type  'numeric' 
-* `supportRHS` - the rule support, of type 'numeric
+* `supportRHS` - the rule support, of type 'numeric'
+* `decisionCoverage` or `coverageRHS` - the fraction of correcly classfied objects, of type 'numeric'
 
 
 ```{r, echo = FALSE, warning=FALSE, message=FALSE, results='asis'}
@@ -48,7 +49,7 @@ library(VisuNet)
 library(knitr)
 library("kableExtra")
 library(autoimage)
-kable(autcon_ruleset[4:6,], format="html",  caption = "The sample 'line by line' data frame") %>%
+kable(autcon_ruleset[4:5,], format="html",  caption = "The sample 'line by line' data frame") %>%
   kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
 ```
 
@@ -148,7 +149,7 @@ VisuNet displays the rule network construct for the 10% of rules with the highes
 The rule networks filtration panel:
 
 * `min Accuracy` - the minimum accuracy value for the set of rules that create the rule network
-* `min Support` - the minimum support value for the set of rules that create the rule network
+* the user select the minimum decision coverage (`Min Decision Coverage`) or support (`Min Support`) value for the set of rules that create the rule network
 * `Show top n nodes` - enable to show the exact number of nodes according the connection value from the current rule network. Set "0" to switch off the parameter
 * `Color of nodes` - the node color schema. See  `NodeColorType` in the [Run Visunet](#runVisunet) section for details.
 

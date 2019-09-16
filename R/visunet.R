@@ -246,34 +246,14 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL",  CustObjectNodes
         visOptions(selectedBy = list(variable = "group", selected = input$Select) )
     })
 
-   # observe({
 
-    #  visNetworkProxy("network") %>%
-    #    visOptions(highlightNearest = list(enabled = TRUE,
-     #                                   degree = input$deg), nodesIdSelection = input$highlightNearestSelect)
-    #})
 
     output$decisions <- renderUI({
       selectInput("decisions",label = ("Choose decision"), choices =  as.character(decs_f), selected = decs_f[1])
     })
 
 
-    #output$Select <- renderUI({
-   #   selectInput("Select",label = ("Select by decision"), choices =  as.character(decs_f), selected = decs_f[1])
-   # })
-
-    #ParameterInput <- reactive({
-   #   switch(input$FiltrationParam,
-   #          "min Support" = minSuppV,
-   #          "min Decision Coverage" = minDecisionCoverageV)
-   #   })
-
-   # output$nrows <- reactive({
-   #   if(ParameterInput() == minSuppV){
-
-  #   }
-  #  })
-    output$FiltrParam = renderUI({ #creates State select box object called in ui
+    output$FiltrParam = renderUI({
 
 
       selectInput(
@@ -359,7 +339,7 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL",  CustObjectNodes
 
     output$download <- renderUI({
       if(input$run !=0) {
-        downloadButton('saveHTML', 'Download Output File')
+        downloadButton('saveHTML', 'Download network as .html')
       }
     })
 
