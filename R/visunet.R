@@ -31,6 +31,13 @@
 #' }
 #'The default is "DL".
 #'
+#' @param NodeSize a character string specifying the size of nodes:
+#' \itemize{
+#'   \item "DC" - the mean decision coverage for the feature
+#'   \item "S" - the mean support for the feature
+#' }
+#' If the decision coverage value is unavailable, the support is taken by default.
+#'
 #' @param CustObjectNodes a list that contains the customized VisuNet output for nodes. The list needs to contain two variables:
 #'\itemize{
 #'   \item nodes - a customized VisuNet output for nodes

@@ -4,7 +4,7 @@
 \alias{visunet}
 \title{VisuNet: an interactive tool for network visualization of rule-based models in R}
 \usage{
-visunet(ruleSet, type = "RDF", NodeColorType = "DL",
+visunet(ruleSet, type = "RDF", NodeColorType = "DL", NodeSize = "DC",
   CustObjectNodes = list(), CustObjectEdges = list())
 }
 \arguments{
@@ -35,6 +35,13 @@ See \code{\link[R.ROSETTA]{rosetta}} for details.
   \item "A" - color of nodes defined by the mean accuracy value for the node.
 }
 The default is "DL".}
+
+\item{NodeSize}{a character string specifying the size of nodes:
+\itemize{
+  \item "DC" - the mean decision coverage for the feature
+  \item "S" - the mean support for the feature
+}
+If the decision coverage value is unavailable, the support is taken by default.}
 
 \item{CustObjectNodes}{a list that contains the customized VisuNet output for nodes. The list needs to contain two variables:
 \itemize{
