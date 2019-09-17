@@ -49,7 +49,7 @@ library(VisuNet)
 library(knitr)
 library("kableExtra")
 library(autoimage)
-kable(autcon_ruleset[4:5,], format="html",  caption = "The sample 'line by line' data frame") %>%
+kable(autcon_ruleset[1:5,], format="html",  caption = "The sample 'line by line' data frame") %>%
   kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
 ```
 
@@ -104,20 +104,12 @@ The available `visunet` parameters are:
     * `"DL"` - feature discretization levels, option is available for data discretized into three levels: 1 - `r icon::fa_circle(color = "#4CABE6", size = 2)`, 2 - `r icon::fa_circle( color = "#8E8E8E", size = 2)` and 3 - `r icon::fa_circle(color = "#E29402", size = 2)`. In the case of gene expression, data discretization levels correspond to: 1 - under-expressed gene, 2 - no change gene expression and 3 - over-expressed gene.
     * `"A"` - color of nodes defined by the mean accuracy value for the node.
     
-```{r, echo =FALSE, warning= FALSE, message= FALSE, fig.height = 3, fig.align='center', fig.cap= 'The node color scale according to the mean accuracy value'}
-breaks=seq(0.7, 1, by=0.001)
-colFunc60_100 = colorRampPalette(c("#F1CDB0", "#D55E00"))
-colVec = colFunc60_100(length(breaks))
-breaks2 = seq(0,0.69,by=0.001)
-colFunc0_60 = colorRampPalette(c("white", "#F1CDB0"))
-colVec2 = colFunc0_60(length(breaks2))
-ColorMat = cbind(as.numeric(c(breaks2, breaks)),c(colVec2, colVec))
-options(scipen = 2)
-log.axis <- list(at = c(0, 0.5, 0.70, 0.8, 0.9, 1), labels = paste0(c(0, 0.5, 0.70, 0.8, 0.9, 1)*100, '%'))
-legend.scale(c(0, 1), col = ColorMat[2:length(ColorMat[,2]),2],
-             breaks = as.numeric(ColorMat[,1]),
-             axis.args = log.axis)
-```
+* `NodeSize`-  a character string parametr for scaling the node size: 
+    * `"DC"` - the mean decision coverage for the node
+    * `"S"` - the mean support for the node
+
+Please note that the node scaling is perfomed per decision. 
+See **?visNodes** for the node scaling details.
     
 <br>
 `CustObjectNodes` and `CustObjectEdges` parameters are optional and can be used when [rule network customization](#RNCust) is needed. 
@@ -230,7 +222,7 @@ To rerun VisuNet with the customized object for nodes, you need to provide the o
 `CustObjectNodes` includes the customized object for nodes: `nodes` and a vector of column names that were changed/added to the object: `CustCol`.
 
 
-```{r, echo = FALSE, warning=FALSE, fig.cap='Sample customized rule network for the autistic and non-autistic young males classifier from VisuNet. Marked genes reported in databases of autism associations (constructed for min support=17 and min accuracy=88%)'}
+```{r, echo = FALSE, warning=FALSE, fig.cap='Sample customized rule network for the autistic and non-autistic young males classifier from VisuNet. Marked genes reported in databases of autism associations (constructed for min decision coverage=27% and min accuracy=88%)'}
 vis_out <- readRDS("data/visunet_out_nodes.RDS")
 visNetwork(nodes = vis_out$nodes, edges = vis_out$edges, width = "100%")%>% 
   visLayout(randomSeed = 123) %>%
@@ -274,7 +266,7 @@ We can rerun VisuNet using customized objects for edges by providing the origina
 
 We can rerun VisuNet using both customized objects: `CustObjectEdges` and `CustObjectNodes`.  
 
-```{r, echo = FALSE, warning=FALSE, message=FALSE, fig.cap='Sample customized rule network for the autistic and non-autistic young males classifier from VisuNet. Marked genes reported in databases of autism associations and the edge direction between COX2 and MAP7  (constructed for min support=17 and min accuracy=88%)'}
+```{r, echo = FALSE, warning=FALSE, message=FALSE, fig.cap='Sample customized rule network for the autistic and non-autistic young males classifier from VisuNet. Marked genes reported in databases of autism associations and the edge direction between COX2 and MAP7  (constructed for min decision coverage=27% and min accuracy=88%)'}
 vis_out <- readRDS("data/visunet_out_edges.RDS")
 visNetwork(nodes = vis_out$nodes, edges = vis_out$edges, width = '100%')%>% 
   visLayout(randomSeed = 123) %>%
