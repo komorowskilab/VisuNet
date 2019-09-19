@@ -166,7 +166,6 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL", NodeSize = "DC",
                   #adding network
                   box(width=12, height = 700,
                       status = "primary",
-                     # tags$head(tags$style(HTML(".tab-pane { height: 70vh; overflow-y: auto; }" ))),
                       solidHeader = TRUE,
                       collapsible = FALSE,
                       visNetworkOutput("network", height = "600px"))
@@ -185,7 +184,10 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL", NodeSize = "DC",
         tabItem(tabName = "legend",
                 fluidPage(
                   h2("Legend"),
-                  tags$img(src = 'https://i.ibb.co/rGyG16p/Visu-Net-legend.png', height="500"))),
+                  tags$img(src = 'https://i.ibb.co/rGyG16p/Visu-Net-legend.png', height="500")),
+                br(),
+                a("See the documentation for details.", href="https://komorowskilab.github.io/VisuNet/", target="_blank")
+                ),
         tabItem(tabName = "about",
                 h2("About"))
       )
