@@ -185,7 +185,7 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL", NodeSize = "DC",
         tabItem(tabName = "legend",
                 fluidPage(
                   h2("Legend"),
-                  tags$img(src = 'https://i.ibb.co/ZGznD9Y/legend-shony.png', height="500"))),
+                  tags$img(src = 'https://i.ibb.co/rGyG16p/Visu-Net-legend.png', height="500"))),
         tabItem(tabName = "about",
                 h2("About"))
       )
