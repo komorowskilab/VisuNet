@@ -179,8 +179,9 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL", NodeSize = "DC",
                       collapsible = TRUE,
                       solidHeader = TRUE,
                       #dataTableOutput("nodes_data_from_shiny"),
-                      uiOutput('dt_UI'))
-                )),
+                      uiOutput('dt_UI')
+                      #DT::dataTableOutput("dt_UI")
+                      ))),
         tabItem(tabName = "legend",
                 fluidPage(
                   h2("Legend"),
@@ -320,10 +321,10 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL", NodeSize = "DC",
       nodeInfo$selected <- input$current_node_id
     })
 
-    output$table <- renderDataTable({
+    output$table <- DT::renderDataTable({
       data =  data()
       decisionName = input$decisions
-      nodes = data[[decisionName]]$nodes
+      #nodes = data[[decisionName]]$nodes
       data[[decisionName]]$RulesSetPerNode[[nodeInfo$selected]]
     })
 
@@ -335,7 +336,7 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL", NodeSize = "DC",
         need(is.null(nodes) == FALSE, "")
       )
       if(nrow(nodes[which(nodeInfo$selected == nodes$id),])!=0){
-        dataTableOutput('table')
+        DT::dataTableOutput('table')
       } else{}
 
     })
