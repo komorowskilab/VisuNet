@@ -46,8 +46,10 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
     NodeConnection = c(NodeConnection, sum(rules[node_id,]$CONNECTION * (unlist((lapply(Nodes_vec[node_id], length)))-1)))
 
     #Set of rules per Node
-
-    NodeRulesSet[[nod]] = viewRules(rules[node_id,])
+    if(type == 'L'){
+    rules_RDF_fin <- suppressWarnings(Viewrules_type_L(rules, node_id))
+    NodeRulesSet[[nod]] = viewRules(rules_RDF_fin)
+    }else{NodeRulesSet[[nod]] = viewRules(rules[node_id,])}
     Dec_table <- sort(table(as.character(rules[node_id, "decision"])),decreasing=TRUE)
     if(Dec_table[1] > sum(Dec_table)*0.5){dec <- names(Dec_table)[1]}else{dec <- paste0(names(Dec_table), collapse=',')}
     DecisionSet = c(DecisionSet, dec)
