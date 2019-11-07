@@ -174,7 +174,7 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
     EdgesTile = paste0('From:  <b>', EdgesInfo$from, '</b><br/>To: <b>', EdgesInfo$to,
                        '</b><br/>Connection: <b>', round(EdgesInfo$conn,2), '</b>')
     EdgesInfo$title = EdgesTile
-    EdgesInfo$width  = (EdgesInfo$connNorm *5)
+    EdgesInfo$width  = (EdgesInfo$connNorm *8)
 
   }
 

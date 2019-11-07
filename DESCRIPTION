@@ -13,6 +13,7 @@ Depends: R (>= 3.5.0),
     plyr,
     dashboardthemes,
     R.ROSETTA (>= 2.0.0),
+    tidyverse,
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
@@ -24,7 +25,8 @@ Imports:
     shinyjs,
     plyr,
     dashboardthemes,
-    R.ROSETTA
+    R.ROSETTA,
+    tidyverse,
 Remotes: 
     datastorm-open/visNetwork,
     mategarb/R.ROSETTA,
