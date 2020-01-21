@@ -1,6 +1,6 @@
 Package: VisuNet
 Title: An interactive tool for network visualization of rule-based models in R
-Version: 1.3.4
+Version: 1.3.5
 Authors@R: person("Karolina", "Smolinska-Garbulowska", email = "karolina.smolinska@icm.uu.se", role = c("aut", "cre"))
 URL: https://komorowskilab.github.io/VisuNet/
 Description: VisuNet is an interactive tool for structural analysis of complex rule-based classifiers. VisuNet can be applied to any classification problem and is commonly used with complex health-related decision tasks
@@ -26,12 +26,12 @@ Imports:
     plyr,
     dashboardthemes,
     R.ROSETTA,
-    tidyverse,
+    tidyverse
 Remotes: 
     datastorm-open/visNetwork,
     mategarb/R.ROSETTA,
     nik01010/dashboardthemes
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Suggests: 
     knitr,
     rmarkdown

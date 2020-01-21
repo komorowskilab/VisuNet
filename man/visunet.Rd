@@ -4,8 +4,14 @@
 \alias{visunet}
 \title{VisuNet: an interactive tool for network visualization of rule-based models in R}
 \usage{
-visunet(ruleSet, type = "RDF", NodeColorType = "DL", NodeSize = "DC",
-  CustObjectNodes = list(), CustObjectEdges = list())
+visunet(
+  ruleSet,
+  type = "RDF",
+  NodeColorType = "DL",
+  NodeSize = "DC",
+  CustObjectNodes = list(),
+  CustObjectEdges = list()
+)
 }
 \arguments{
 \item{ruleSet}{the appropriately formatted set of rules:

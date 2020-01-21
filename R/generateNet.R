@@ -1,4 +1,4 @@
-generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  NewDataNodes, NewDataEdges){
+generateNet=function(decs, rules, type, RulesSetSite, TopNodes,FiltrParam,  NodeColorType,  NewDataNodes, NewDataEdges){
   if(type == 'RDF'){
     vec = as.character(as.matrix(rules["features"]))
     lst1 = sapply(vec, function(x) strsplit(x, ",", fixed = TRUE))
@@ -114,6 +114,9 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
                             meanAcc = meanAcc, meanSupp = meanSupp,  NRules = NRules,
                             PrecRules = PrecRules, NodeConnection = NodeConnection, title = NodeTitle)
   }
+  if(FiltrParam != 'Min Decision Coverage' ){
+    NodeInfoDF$value <- meanSupp
+  }
 
   if(decs == 'all'){
     NodeInfoDF$group = DecisionSet
@@ -174,7 +177,7 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes, NodeColorType,  
     EdgesTile = paste0('From:  <b>', EdgesInfo$from, '</b><br/>To: <b>', EdgesInfo$to,
                        '</b><br/>Connection: <b>', round(EdgesInfo$conn,2), '</b>')
     EdgesInfo$title = EdgesTile
-    EdgesInfo$width  = (EdgesInfo$connNorm *8)
+    EdgesInfo$width  = (EdgesInfo$connNorm *10)
 
   }
 
