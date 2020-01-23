@@ -169,7 +169,7 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes,FiltrParam,  Node
     #Normalized connection value
     if(dim(EdgesInfo)[1] == 1 )  EdgesInfo$connNorm = 1 else EdgesInfo$connNorm = ((EdgesInfo$conn-min(EdgesInfo$conn))/(max(EdgesInfo$conn)-min(EdgesInfo$conn)))
     EdgesInfo$label2 = paste0(EdgesInfo$from, '-', EdgesInfo$to )
-    EdgesInfo$color = rep('#a3a3a3', length(EdgesInfo$connNorm))
+    EdgesInfo$color = rep('#c2c2c2', length(EdgesInfo$connNorm))
     EdgesInfo$color[which(EdgesInfo$connNorm >= 0.85)] = '#ea1d1d'
     EdgesInfo$color[which(EdgesInfo$connNorm < 0.85 & EdgesInfo$connNorm >= 0.7)] = '#d86431'
     EdgesInfo$color[which(EdgesInfo$connNorm < 0.7 & EdgesInfo$connNorm >= 0.55)] = '#dbcb33'
