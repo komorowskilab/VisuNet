@@ -164,7 +164,9 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes,FiltrParam,  Node
     EdgesInfoAllSort=t(apply(subset(EdgesInfoTemp, select=c("from", "to")), 1, sort))
     colnames(EdgesInfoAllSort) = c('from' , 'to')
     EdgesInfoAllSort2=data.frame(EdgesInfoAllSort,'conn' = EdgesInfoTemp$conn )
-    EdgesInfo = aggregate(EdgesInfoAllSort2$conn~EdgesInfoAllSort2$from+EdgesInfoAllSort2$to, FUN= function(x) sum(as.numeric(levels(x))[x]))
+    EdgesInfo_tmp <- aggregate(EdgesInfoAllSort2, by=list(EdgesInfoAllSort2$from,EdgesInfoAllSort2$to),
+                               FUN= function(x) sum(as.numeric(x)))
+    EdgesInfo = EdgesInfo_tmp[,-c(3,4)]
     colnames(EdgesInfo) = c('from' , 'to' , 'conn')
     #Normalized connection value
     if(dim(EdgesInfo)[1] == 1 )  EdgesInfo$connNorm = 1 else EdgesInfo$connNorm = ((EdgesInfo$conn-min(EdgesInfo$conn))/(max(EdgesInfo$conn)-min(EdgesInfo$conn)))
