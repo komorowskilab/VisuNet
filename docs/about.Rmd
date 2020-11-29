@@ -85,7 +85,7 @@ VisuNet is an R package implemented as [Shiny Gadgets](https://shiny.rstudio.com
 ```{r, echo = TRUE, fig.align='center', warning=FALSE, eval=FALSE}
 require(VisuNet)
 
-#Sample rule set for a classifier of autistic and non-autistic young males
+#Sample rule set for a classifier of  young males with autism and control
 #'Line by line' data type
 autcon_ruleset
 
@@ -222,7 +222,7 @@ To rerun VisuNet with the customized object for nodes, you need to provide the o
 `CustObjectNodes` includes the customized object for nodes: `nodes` and a vector of column names that were changed/added to the object: `CustCol`.
 
 
-```{r, echo = FALSE, warning=FALSE, fig.cap='Sample customized rule network for the autistic and non-autistic young males classifier from VisuNet. Marked genes reported in databases of autism associations (constructed for min decision coverage=27% and min accuracy=88%)'}
+```{r, echo = FALSE, warning=FALSE, fig.cap='Sample customized rule network for the  young males classifier with autism and control from VisuNet. Marked genes reported in databases of autism associations (constructed for min decision coverage=27% and min accuracy=88%)'}
 vis_out <- readRDS("data/visunet_out_nodes.RDS")
 visNetwork(nodes = vis_out$nodes, edges = vis_out$edges, width = "100%")%>% 
   visLayout(randomSeed = 123) %>%
@@ -266,7 +266,7 @@ We can rerun VisuNet using customized objects for edges by providing the origina
 
 We can rerun VisuNet using both customized objects: `CustObjectEdges` and `CustObjectNodes`.  
 
-```{r, echo = FALSE, warning=FALSE, message=FALSE, fig.cap='Sample customized rule network for the autistic and non-autistic young males classifier from VisuNet. Marked genes reported in databases of autism associations and the edge direction between COX2 and MAP7  (constructed for min decision coverage=27% and min accuracy=88%)'}
+```{r, echo = FALSE, warning=FALSE, message=FALSE, fig.cap='Sample customized rule network for young males with autism and control classifier from VisuNet. Marked genes reported in databases of autism associations and the edge direction between COX2 and MAP7  (constructed for min decision coverage=27% and min accuracy=88%)'}
 vis_out <- readRDS("data/visunet_out_edges.RDS")
 visNetwork(nodes = vis_out$nodes, edges = vis_out$edges, width = '100%')%>% 
   visLayout(randomSeed = 123) %>%
@@ -279,3 +279,72 @@ visNetwork(nodes = vis_out$nodes, edges = vis_out$edges, width = '100%')%>%
                                outline:none;'))
 ```
 
+## Network for alternative rule-based classifier {#Arules}
+
+VisuNet can be used with any rule-based model as long as the input data is created in the VisuNet format.
+To show the universality of VisuNet we created an association rule-based model for the case-control study of autism based on an [arulesCBA](https://CRAN.R-project.org/package=arulesCBA) package. 
+
+### Example
+
+```{r, echo = TRUE, fig.align='center', warning=FALSE, eval=FALSE}
+library("arulesCBA")
+
+
+#create a training set by randomly selecting 48 objects from each decsion class
+autcon_training <- autcon %>% 
+  group_by(decision) %>% 
+  sample_n(48, set.seed=1, replace =  FALSE) %>%  
+  as.data.frame()
+
+#create a test set
+id_training <- rbind(autcon_training, autcon) %>% duplicated()
+id_test <- which(id_training[97:length(id_training)] == FALSE) 
+autcon_test <- autcon[id_test,] 
+
+# run the CBA classifier
+classifier <-  CBA(decision ~ ., data = autcon_training) 
+
+#obtain rules from the model
+rules <- DATAFRAME(rules(classifier), setStart = '',setEnd = '')
+
+#format a left-hand side of rules
+ruleslhs <- rules$LHS
+
+#change discretization levels from intervals to 1,2,3
+ruleslhs2 <- gsub( " *\\[-Inf.*?\\) *", "1", ruleslhs)
+ruleslhs2 <- gsub( " *\\[.*?\\) *", "2", ruleslhs2)
+ruleslhs2 <- gsub( " *\\[.*?\\Inf] *", "3", ruleslhs2)
+
+
+#select required columns from the rules 
+rules2 <- rules %>%  dplyr::select(LHS:confidence)  
+
+#replace the original left-hand side of rules with the modified version
+rules2$LHS <- ruleslhs2
+
+#rename columns name to fullfil the VisuNet input format
+colnames(rules2) <- c('features', 'decision', 'supportRHS', 'accuracyRHS')
+
+# format support to obtain intiger numbers
+rules2$supportRHS <- (rules2$supportRHS * 96) %>%  round()
+
+#run VisuNet
+vis <- visunet(rules2, type = 'L')
+
+```
+
+
+
+```{r, echo = FALSE, warning=FALSE, message=FALSE, fig.cap='Rule-network created for an association rule-based model for case-control study of autism'}
+vis_out <- readRDS("data/arules_vis.RDS")
+
+visNetwork(nodes = vis_out$all$nodes, edges = vis_out$all$edges, width = '100%')%>% 
+  visLayout(randomSeed = 123) %>%
+  visInteraction(hover = TRUE, navigationButtons = TRUE) %>%
+  visOptions(selectedBy = list(variable = "group", multiple = TRUE, main = "Select by decision", style = 'width:   200px; height: 30px;
+                                padding-left: 80px;
+                               font-size: 15px;
+                               color: black;
+                               border:none;
+                               outline:none;'))
+```
