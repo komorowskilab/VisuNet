@@ -59,7 +59,7 @@ You can use the 'line by line' format with the option:
 
 
 ```{r, echo = TRUE, fig.align='center', warning=FALSE, eval=FALSE}
-rules <- data(autcon_ruleset)
+rules <- autcon_ruleset
 vis_out <- visunet(rules, type = "L")
 ```
 <br>
@@ -87,7 +87,7 @@ require(VisuNet)
 
 #Sample rule set for a classifier of autistic and non-autistic young males
 #'Line by line' data type
-data(autcon_ruleset)
+autcon_ruleset
 
 #Run VisuNet
 #Remember to click DONE once you finish working on VisuNet
