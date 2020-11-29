@@ -16,7 +16,7 @@
 \href{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE25507}{GEO DataSet}
 }
 \usage{
-data(autcon_ruleset)
+autcon_ruleset
 }
 \description{
 The rule-based classifier was created for the gene expression levels of 82 autistic and 64 non-autistic (control) male children.

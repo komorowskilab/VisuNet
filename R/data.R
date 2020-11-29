@@ -15,7 +15,7 @@
 #'}
 #' @docType data
 #'
-#' @usage data(autcon_ruleset)
+#' @usage autcon_ruleset
 #'
 #' @references Alter et al. (2011) PloS one, e16715
 #' (\href{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3040743/}{PubMed})

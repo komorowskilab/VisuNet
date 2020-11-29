@@ -114,7 +114,7 @@ vis_out <- visunet(resultsRos$main, type = "RDF")
 ------------
 
 #"Line by line" file format
-rules <- data(autcon_ruleset)
+rules <- autcon_ruleset
 vis_out <- visunet(rules, type = "L")
 
 }
