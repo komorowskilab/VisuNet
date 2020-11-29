@@ -14,6 +14,7 @@ Depends: R (>= 3.5.0),
     dashboardthemes,
     R.ROSETTA (>= 2.0.0),
     tidyverse,
+    backports,
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
@@ -26,7 +27,8 @@ Imports:
     plyr,
     dashboardthemes,
     R.ROSETTA,
-    tidyverse
+    backports,
+    tidyverse,
 Remotes: 
     datastorm-open/visNetwork,
     mategarb/R.ROSETTA,
