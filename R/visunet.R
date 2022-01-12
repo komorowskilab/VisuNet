@@ -209,7 +209,7 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL", NodeSize = "DC",
         filter_rules(rules, input$accuracy, input$support, input$FiltrParam, input$value_slider)
       )
       RulesFiltr =  filtration_rules(rules, input$accuracy, input$FiltrParam, input$value_slider)
-      data_input=generate_object(decs, RulesFiltr,type, input$TopNodes, input$FiltrParam,input$NodeColor, EdgeColor = 'R', EdgeWidth=10, CustObjectNodes, CustObjectEdges)
+      data_input=generate_object(decs, RulesFiltr,type, input$TopNodes, input$FiltrParam,input$NodeColor, EdgeColor, EdgeWidth, CustObjectNodes, CustObjectEdges)
       return(data_input)
     })
 
