@@ -111,7 +111,7 @@
 
 
 
-visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL", NodeSize = "DC",  CustObjectNodes=list(), CustObjectEdges=list()){
+visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL", NodeSize = "DC", EdgeColor = 'R', EdgeWidth=10, CustObjectNodes=list(), CustObjectEdges=list()){
   rules <- ruleSet
   rules <-  data_input(rules, type)
   rules_10per_param <-  filtration_rules_10per(rules)
@@ -209,7 +209,7 @@ visunet = function(ruleSet, type ="RDF",  NodeColorType = "DL", NodeSize = "DC",
         filter_rules(rules, input$accuracy, input$support, input$FiltrParam, input$value_slider)
       )
       RulesFiltr =  filtration_rules(rules, input$accuracy, input$FiltrParam, input$value_slider)
-      data_input=generate_object(decs, RulesFiltr,type, input$TopNodes, input$FiltrParam,input$NodeColor,  CustObjectNodes, CustObjectEdges)
+      data_input=generate_object(decs, RulesFiltr,type, input$TopNodes, input$FiltrParam,input$NodeColor, EdgeColor = 'R', EdgeWidth=10, CustObjectNodes, CustObjectEdges)
       return(data_input)
     })
 
