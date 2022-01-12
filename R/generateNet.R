@@ -192,7 +192,7 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes,FiltrParam,  Node
     #EdgesInfo$color[which(EdgesInfo$connNorm >= 0.85)] = '#ea1d1d'
     #EdgesInfo$color[which(EdgesInfo$connNorm < 0.85 & EdgesInfo$connNorm >= 0.7)] = '#d86431'
     #EdgesInfo$color[which(EdgesInfo$connNorm < 0.7 & EdgesInfo$connNorm >= 0.55)] = '#dbcb33'
-    #EdgesTile = paste0('From:  <b>', EdgesInfo$from, '</b><br/>To: <b>', EdgesInfo$to,
+    EdgesTile = paste0('From:  <b>', EdgesInfo$from, '</b><br/>To: <b>', EdgesInfo$to,
                        '</b><br/>Connection: <b>', round(EdgesInfo$conn,2), '</b>')
     EdgesInfo$title = EdgesTile
     #EdgesInfo$width  = (EdgesInfo$connNorm *10)
