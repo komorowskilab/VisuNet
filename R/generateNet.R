@@ -1,4 +1,4 @@
-generateNet=function(decs, rules, type, RulesSetSite, TopNodes,FiltrParam,  NodeColorType,  NewDataNodes, NewDataEdges){
+generateNet=function(decs, rules, type, RulesSetSite, TopNodes,FiltrParam,  NodeColorType, EdgeColor, EdgeWidth, NewDataNodes, NewDataEdges){
   if(type == 'RDF'){
     vec = as.character(as.matrix(rules["features"]))
     lst1 = sapply(vec, function(x) strsplit(x, ",", fixed = TRUE))
@@ -171,14 +171,31 @@ generateNet=function(decs, rules, type, RulesSetSite, TopNodes,FiltrParam,  Node
     #Normalized connection value
     if(dim(EdgesInfo)[1] == 1 )  EdgesInfo$connNorm = 1 else EdgesInfo$connNorm = ((EdgesInfo$conn-min(EdgesInfo$conn))/(max(EdgesInfo$conn)-min(EdgesInfo$conn)))
     EdgesInfo$label2 = paste0(EdgesInfo$from, '-', EdgesInfo$to )
-    EdgesInfo$color = rep('#c2c2c2', length(EdgesInfo$connNorm))
-    EdgesInfo$color[which(EdgesInfo$connNorm >= 0.85)] = '#ea1d1d'
-    EdgesInfo$color[which(EdgesInfo$connNorm < 0.85 & EdgesInfo$connNorm >= 0.7)] = '#d86431'
-    EdgesInfo$color[which(EdgesInfo$connNorm < 0.7 & EdgesInfo$connNorm >= 0.55)] = '#dbcb33'
-    EdgesTile = paste0('From:  <b>', EdgesInfo$from, '</b><br/>To: <b>', EdgesInfo$to,
+    if(EdgeColor=='B'){
+      EdgesInfo$color = rep('#c2c2c2', length(EdgesInfo$connNorm))
+      EdgesInfo$color[which(EdgesInfo$connNorm >= 0.85)] = '#000000'
+      EdgesInfo$color[which(EdgesInfo$connNorm < 0.85 & EdgesInfo$connNorm >= 0.7)] = '#666666'
+      EdgesInfo$color[which(EdgesInfo$connNorm < 0.7 & EdgesInfo$connNorm >= 0.55)] = '#999999'
+      EdgesInfo$width  = (EdgesInfo$connNorm *EdgeWidth)
+    }else{
+      EdgesInfo$color = rep('#c2c2c2', length(EdgesInfo$connNorm))
+      EdgesInfo$color[which(EdgesInfo$connNorm >= 0.85)] = '#ea1d1d'
+      EdgesInfo$color[which(EdgesInfo$connNorm < 0.85 & EdgesInfo$connNorm >= 0.7)] = '#d86431'
+      EdgesInfo$color[which(EdgesInfo$connNorm < 0.7 & EdgesInfo$connNorm >= 0.55)] = '#dbcb33'
+      EdgesInfo$width  = (EdgesInfo$connNorm *EdgeWidth)
+    }
+                          
+                               
+                               
+                               
+    #EdgesInfo$color = rep('#c2c2c2', length(EdgesInfo$connNorm))
+    #EdgesInfo$color[which(EdgesInfo$connNorm >= 0.85)] = '#ea1d1d'
+    #EdgesInfo$color[which(EdgesInfo$connNorm < 0.85 & EdgesInfo$connNorm >= 0.7)] = '#d86431'
+    #EdgesInfo$color[which(EdgesInfo$connNorm < 0.7 & EdgesInfo$connNorm >= 0.55)] = '#dbcb33'
+    #EdgesTile = paste0('From:  <b>', EdgesInfo$from, '</b><br/>To: <b>', EdgesInfo$to,
                        '</b><br/>Connection: <b>', round(EdgesInfo$conn,2), '</b>')
     EdgesInfo$title = EdgesTile
-    EdgesInfo$width  = (EdgesInfo$connNorm *10)
+    #EdgesInfo$width  = (EdgesInfo$connNorm *10)
 
   }
 
