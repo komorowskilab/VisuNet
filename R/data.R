@@ -1,4 +1,4 @@
-#' Rule set from the classifier of autisic and non-autiscic young males
+#' Rule set from the classifier of young males with autism and healthy individuals.
 #'
 #'
 #' The rule-based classifier was created for the gene expression levels of 82 autistic and 64 non-autistic (control) male children.
