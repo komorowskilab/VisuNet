@@ -83,7 +83,7 @@ visNetwork(nodes = vis_out$nodes, edges = vis_out$edges, width = '100%') %>%
 # Network legend
 
 <center>
-[ ![](images/VisuNet_legend2.png)](images/VisuNet_legend2.png) 
+[ ![](images/VisuNet_legend2.png)](images/VisuNet_legend.png) 
 The rule network legend
 </center>
 
